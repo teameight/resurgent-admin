@@ -1,0 +1,23 @@
+{
+  "name": "resurgent-admin",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "re-base": "^2.2.0",
+    "react": "^15.6.1",
+    "react-bootstrap": "^0.31.2",
+    "react-dom": "^15.6.1",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.0.13"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-sass": "^3.1.0"
+  }
+}
