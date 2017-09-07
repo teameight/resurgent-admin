@@ -43,6 +43,7 @@ class Area extends Component {
 		return (
 			<Col md={8} className="admin-screen">
 				<h2>{area.name}</h2>
+				<p>Edit some or all of this area's details</p>
 				<form className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
 					<div className="form-group">
 						<label htmlFor="formControlsName" className="control-label">Area Name</label>
@@ -63,6 +64,7 @@ class Area extends Component {
 					<button className="btn btn-primary" type="submit">Update</button>
 				</form>
 				<h3>Providers in this Area</h3>
+				<p>Select a provider to edit.</p>
 				<ul>
 				{
 					Object

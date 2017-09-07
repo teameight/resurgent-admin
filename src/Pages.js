@@ -6,6 +6,7 @@ class Pages extends Component {
 		return (
 			<div className="admin-screen">
 				<h2>Pages</h2>
+				<p>Select a page to edit.</p>
 				<ul>
 				{
 					Object

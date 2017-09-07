@@ -6,6 +6,7 @@ class Providers extends Component {
 		return (
 			<div className="admin-screen">
 				<h2>Providers</h2>
+				<p>Select a category, an area, or a provider to edit.</p>
 				<ul>
 				{
 					Object

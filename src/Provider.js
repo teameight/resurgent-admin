@@ -46,6 +46,7 @@ class Provider extends Component {
 		return (
 			<Col md={8} className="admin-screen">
 				<h2>{provider.name}</h2>
+				<p>Edit some or all of this provider's details</p>
 				<form className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
 					<div className="form-group">
 						<label htmlFor="formControlsName" className="control-label">Provider Name</label>
@@ -65,7 +66,8 @@ class Provider extends Component {
 					</div>
 					<button className="btn btn-primary" type="submit">Update</button>
 				</form>
-				<h3>All Providers in this Area</h3>
+				<h3>All Providers in the same Area</h3>
+				<p>Select a provider to edit.</p>
 				<ul>
 				{
 					Object

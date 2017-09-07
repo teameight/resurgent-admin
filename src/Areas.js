@@ -6,6 +6,7 @@ class Areas extends Component {
 		return (
 			<div className="admin-screen">
 				<h2>Areas</h2>
+				<p>Select a category or an area to edit.</p>
 				<ul>
 				{
 					Object

@@ -6,6 +6,7 @@ class Categories extends Component {
 		return (
 			<div className="admin-screen">
 				<h2>Categories</h2>
+				<p>Select a category to edit.</p>
 				<ul>
 				{
 					Object

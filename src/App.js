@@ -7,6 +7,7 @@ import Callback from './Callback/Callback';
 
 import Header from './Header';
 import Loading from './Loading';
+import styles from './App.css';
 
 import { Grid, Row, Col } from 'react-bootstrap';
 
@@ -148,16 +149,21 @@ class App extends Component {
 
     return (
         <div>
-        {
+          {
               !isAuthenticated() && (
-                  <button type="button" className="btn" onClick={this.login.bind(this)}>Sign In</button>
+                  <div className="admin">
+                    <div className="admin-header">
+                      <Header showMenu={false} auth={this.props.auth} />
+                    </div>
+                    <button type="button" className="btn sign-in" onClick={this.login.bind(this)}>Sign In</button>
+                  </div>
                 )
             }
             {
               isAuthenticated() && (
           <div className="admin">
               <div className="admin-header">
-                <Header auth={this.props.auth} />
+                <Header showMenu={true} auth={this.props.auth} />
               </div>
               {
                 noData && (
