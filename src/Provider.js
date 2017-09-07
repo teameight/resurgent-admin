@@ -38,7 +38,7 @@ class Provider extends Component {
 	render() {
 		const ckey = this.props.location.state.ckey;
 		const akey = this.props.location.state.akey;
-		const pkey = this.props.location.state.pkey;
+		let pkey = this.props.location.state.pkey;
 		let category = this.props.categories[ckey];
 		let area = category["areas"][akey];
 		let provider = area["providers"][pkey];
@@ -66,17 +66,6 @@ class Provider extends Component {
 					</div>
 					<button className="btn btn-primary" type="submit">Update</button>
 				</form>
-				<h3>All Providers in the same Area</h3>
-				<p>Select a provider to edit.</p>
-				<ul>
-				{
-					Object
-						.keys(area["providers"])
-						.map( pkey =>
-							<li><Link key={pkey} to={{ pathname: '/providers/' + pkey, state: { ckey: ckey, akey: akey, pkey: pkey } }}>{area["providers"][pkey].name}</Link></li>
-						)
-				}
-				</ul>
 			</Col>
 		)
 	}
