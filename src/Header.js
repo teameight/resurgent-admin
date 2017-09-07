@@ -19,6 +19,7 @@ class Header extends Component {
 			        <NavItem href="/providers">Providers</NavItem>
 			        <NavItem href="/users">Users</NavItem>
 			        <NavItem href="/pages">Pages</NavItem>
+			        <NavItem href="/logout">Sign Out</NavItem>
 			      </Nav>
 			    </Navbar.Collapse>
 			  </Navbar>

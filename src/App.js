@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Route, BrowserRouter as Router } from 'react-router-dom';
 import base from './base';
 
+import Auth from './Auth/Auth';
+import Callback from './Callback/Callback';
+
 import Header from './Header';
 import Loading from './Loading';
 
@@ -15,6 +18,8 @@ import Providers from './Providers';
 import Provider from './Provider';
 import Pages from './Pages';
 import Page from './Page';
+
+
 
 class App extends Component {
   constructor() {
@@ -119,39 +124,66 @@ class App extends Component {
     });
   }
 
+  goTo(route) {
+    this.props.history.replace(`/${route}`)
+  }
+
+  login() {
+    this.props.auth.login();
+  }
+
+  logout() {
+    this.props.auth.logout();
+  }
+
+
   render() {
+    const { isAuthenticated } = this.props.auth;
     let categories = this.state.categories;
     let noData = (Object.keys(categories).length === 0 && categories.constructor === Object);
 
+    if(this.props.location.pathname === '/logout'){
+      this.logout();
+    }
+
     return (
-      <Router>
-        <div className="admin">
-          <div className="admin-header">
-            <Header />
-          </div>
-          {
-            noData && (
-              <Loading />
+        <div>
+        {
+              !isAuthenticated() && (
+                  <button type="button" className="btn" onClick={this.login.bind(this)}>Sign In</button>
+                )
+            }
+            {
+              isAuthenticated() && (
+          <div className="admin">
+              <div className="admin-header">
+                <Header auth={this.props.auth} />
+              </div>
+              {
+                noData && (
+                  <Loading />
+                )
+              }
+              {
+                !noData && (
+                  <Grid>
+                    <Row className="show-grid">
+                      <Route exact path="/" render={(props) => <Categories categories={this.state.categories} {...props} />} />
+                      <Route path="/categories/:ckey" render={(props) => <Category categories={this.state.categories} updateCategory={this.updateCategory} {...props} />} />
+                      <Route exact path="/areas" render={(props) => <Areas categories={this.state.categories} {...props} />} />
+                      <Route path="/areas/:akey" render={(props) => <Area categories={this.state.categories} updateArea={this.updateArea} {...props} />} />
+                      <Route exact path="/providers" render={(props) => <Providers categories={this.state.categories} {...props} />} />
+                      <Route path="/providers/:pkey" render={(props) => <Provider categories={this.state.categories} updateProvider={this.updateProvider} {...props} />} />
+                      <Route exact path="/pages" render={(props) => <Pages pages={this.state.pages} {...props} />} />
+                      <Route path="/pages/:key" render={(props) => <Page pages={this.state.pages} updatePage={this.updatePage} {...props} />} />
+                    </Row>
+                  </Grid>
+                )
+              }
+            </div>
             )
           }
-          {
-            !noData && (
-              <Grid>
-                <Row className="show-grid">
-                  <Route exact path="/" render={(props) => <Categories categories={this.state.categories} {...props} />} />
-                  <Route path="/categories/:ckey" render={(props) => <Category categories={this.state.categories} updateCategory={this.updateCategory} {...props} />} />
-                  <Route exact path="/areas" render={(props) => <Areas categories={this.state.categories} {...props} />} />
-                  <Route path="/areas/:akey" render={(props) => <Area categories={this.state.categories} updateArea={this.updateArea} {...props} />} />
-                  <Route exact path="/providers" render={(props) => <Providers categories={this.state.categories} {...props} />} />
-                  <Route path="/providers/:pkey" render={(props) => <Provider categories={this.state.categories} updateProvider={this.updateProvider} {...props} />} />
-                  <Route exact path="/pages" render={(props) => <Pages pages={this.state.pages} {...props} />} />
-                  <Route path="/pages/:key" render={(props) => <Page pages={this.state.pages} updatePage={this.updatePage} {...props} />} />
-                </Row>
-              </Grid>
-            )
-          }
-        </div>
-      </Router>
+      </div>
     )
   }
 }
