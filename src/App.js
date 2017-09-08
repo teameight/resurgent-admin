@@ -161,7 +161,7 @@ class App extends Component {
                     <div className="admin-header">
                       <Header showMenu={false} auth={this.props.auth} />
                     </div>
-                    <button type="button" className="btn sign-in" onClick={this.login.bind(this)}>Sign In</button>
+                    <button type="button" className="btn btn-primary sign-in" onClick={this.login.bind(this)}>Sign In</button>
                   </div>
                 )
             }

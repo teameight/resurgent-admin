@@ -23,7 +23,7 @@
   to { transform: rotate(360deg); }
 }
 
-.navbar {
+.navbar-header {
   min-height: 95px;
 }
 .navbar-brand img {

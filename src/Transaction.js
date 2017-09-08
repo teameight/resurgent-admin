@@ -54,7 +54,7 @@ class Transaction extends React.Component {
                             <p>Provider: <em>{pName}</em></p>
                             <p>reviewed {showDate}</p>
                         </div>
-                        <div className="details-row">
+                        <div>
                             <p>Review Headline: <strong>{details.review.headline}</strong></p>
                             <p>Review Body: {details.review.message}</p>
                         </div>
