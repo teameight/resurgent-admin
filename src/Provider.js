@@ -48,6 +48,13 @@ class Provider extends Component {
 		// NEED TO DO: filter these by this provider key, not just display all of user 1. Also need to be able to disable, and/or refund
     const transactions = this.props.transactions[userId];
 
+		const filterTransactions = (pkey) => {
+			return Object.keys(transactions).filter((key) => transactions[key].provider === pkey )
+		}
+
+		const filteredTransactions = filterTransactions(pkey);
+
+
 		return (
 			<Col md={8} className="admin-screen">
 				<h2>{provider.name}</h2>
@@ -74,9 +81,10 @@ class Provider extends Component {
 
 				<h3 className="instruction">{provider.name} Transaction History</h3>
 				{
+					// TODO: Filter these to only show current provider transactions
           Object
             .keys(transactions)
-            .map(key => <Transaction keyId={key} pname={provider.name} cname={category.name} aname={area.name} details={transactions[key]} />)
+            .map(key => <Transaction keyId={key} pname={provider.name} cname={category.name} aname={area.name} details={transactions[key]} users={this.props.users} />)
         }
 			</Col>
 		)
