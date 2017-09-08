@@ -109,11 +109,7 @@ class App extends Component {
   }
 
   componentWillMount() {
-    this.ref = base.syncState(`categories`, {
-      context: this,
-      state: 'categories'
-    });
-
+    
     this.ref = base.syncState(`users`, {
       context: this,
       state: 'users'
@@ -122,6 +118,16 @@ class App extends Component {
     this.ref = base.syncState(`pages`, {
       context: this,
       state: 'pages'
+    });
+
+    this.ref = base.syncState(`transactions`, {
+      context: this,
+      state: 'transactions'
+    });
+
+    this.ref = base.syncState(`categories`, {
+      context: this,
+      state: 'categories'
     });
   }
 
@@ -179,7 +185,7 @@ class App extends Component {
                       <Route exact path="/areas" render={(props) => <Areas categories={this.state.categories} {...props} />} />
                       <Route path="/areas/:akey" render={(props) => <Area categories={this.state.categories} updateArea={this.updateArea} {...props} />} />
                       <Route exact path="/providers" render={(props) => <Providers categories={this.state.categories} {...props} />} />
-                      <Route path="/providers/:pkey" render={(props) => <Provider categories={this.state.categories} updateProvider={this.updateProvider} {...props} />} />
+                      <Route path="/providers/:pkey" render={(props) => <Provider categories={this.state.categories} transactions={this.state.transactions} updateProvider={this.updateProvider} {...props} />} />
                       <Route exact path="/pages" render={(props) => <Pages pages={this.state.pages} {...props} />} />
                       <Route path="/pages/:key" render={(props) => <Page pages={this.state.pages} updatePage={this.updatePage} {...props} />} />
                     </Row>

@@ -99,3 +99,19 @@
     -webkit-transform: scale(1.0);
   }
 }
+
+
+.details-box {
+  background: white;
+  padding: 12px 8px;
+  font-size: 14px;
+  border-top: 1px solid gray;
+}
+.details-box.solo {
+  border-bottom: 1px solid gray;
+}
+
+.details-box .details-row {
+  display: flex;
+  justify-content: space-between;
+}

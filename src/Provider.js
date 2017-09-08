@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
+import Transaction from './Transaction';
 
 class Provider extends Component {
 	constructor(props) {
@@ -43,6 +44,10 @@ class Provider extends Component {
 		let area = category["areas"][akey];
 		let provider = area["providers"][pkey];
 
+		const userId = "user-1";
+		// NEED TO DO: filter these by this provider key, not just display all of user 1. Also need to be able to disable, and/or refund
+    const transactions = this.props.transactions[userId];
+
 		return (
 			<Col md={8} className="admin-screen">
 				<h2>{provider.name}</h2>
@@ -66,6 +71,13 @@ class Provider extends Component {
 					</div>
 					<button className="btn btn-primary" type="submit">Update</button>
 				</form>
+
+				<h3 className="instruction">{provider.name} Transaction History</h3>
+				{
+          Object
+            .keys(transactions)
+            .map(key => <Transaction keyId={key} pname={provider.name} cname={category.name} aname={area.name} details={transactions[key]} />)
+        }
 			</Col>
 		)
 	}
