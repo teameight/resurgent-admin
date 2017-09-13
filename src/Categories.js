@@ -16,6 +16,7 @@ class Categories extends Component {
 						)
 				}
 				</ul>
+				<Link className="btn btn-primary" to={{pathname: '/add-category'}}>Add New Category</Link>
 			</div>
 		)
 	}

@@ -13,6 +13,7 @@ import { Grid, Row } from 'react-bootstrap';
 
 import Categories from './Categories';
 import Category from './Category';
+import AddCategory from './AddCategory';
 import Areas from './Areas';
 import Area from './Area';
 import Providers from './Providers';
@@ -52,6 +53,10 @@ class App extends Component {
     }
 
     this.setState({categories});
+  }
+
+  addCategory(formValue) {
+    console.log(formValue);
   }
 
   updateArea(ckey, akey, formValue) {
@@ -182,6 +187,7 @@ class App extends Component {
                     <Row className="show-grid">
                       <Route exact path="/" render={(props) => <Categories categories={this.state.categories} {...props} />} />
                       <Route path="/categories/:ckey" render={(props) => <Category categories={this.state.categories} updateCategory={this.updateCategory} {...props} />} />
+                      <Route path="/add-category" render={(props) => <AddCategory categories={this.state.categories} addCategory={this.addCategory} {...props} />} />
                       <Route exact path="/areas" render={(props) => <Areas categories={this.state.categories} {...props} />} />
                       <Route path="/areas/:akey" render={(props) => <Area categories={this.state.categories} updateArea={this.updateArea} {...props} />} />
                       <Route exact path="/providers" render={(props) => <Providers categories={this.state.categories} {...props} />} />
