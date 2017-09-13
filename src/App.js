@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route, BrowserRouter as Router } from 'react-router-dom';
-import base from './base';
+import fire from './fire';
 
 import Auth from './Auth/Auth';
 import Callback from './Callback/Callback';
@@ -115,25 +115,38 @@ class App extends Component {
 
   componentWillMount() {
 
-    this.ref = base.syncState(`users`, {
-      context: this,
-      state: 'users'
+    const usersRef = fire.database().ref('users');
+    usersRef.on('value', (snapshot) => {
+      let items = snapshot.val();
+      this.setState({
+        users: items
+      });
     });
 
-    this.ref = base.syncState(`pages`, {
-      context: this,
-      state: 'pages'
+    const pagesRef = fire.database().ref('pages');
+    pagesRef.on('value', (snapshot) => {
+      let items = snapshot.val();
+      this.setState({
+        pages: items
+      });
     });
 
-    this.ref = base.syncState(`transactions`, {
-      context: this,
-      state: 'transactions'
+    const transRef = fire.database().ref('transactions');
+    transRef.on('value', (snapshot) => {
+      let items = snapshot.val();
+      this.setState({
+        transactions: items
+      });
     });
 
-    this.ref = base.syncState(`categories`, {
-      context: this,
-      state: 'categories'
+    const catRef = fire.database().ref('categories');
+    catRef.on('value', (snapshot) => {
+      let items = snapshot.val();
+      this.setState({
+        categories: items
+      });
     });
+
   }
 
   goTo(route) {
