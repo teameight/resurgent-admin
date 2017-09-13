@@ -3,13 +3,6 @@ import { withRouter } from 'react-router-dom';
 import dateFormat from 'dateformat';
 
 class Transaction extends React.Component {
-
-	constructor() {
-		super();
-
-
-	}
-
 	render() {
 		const {details} = this.props;
 		const showDate = dateFormat(details.date, "mmm d, yyyy");

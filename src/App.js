@@ -9,7 +9,7 @@ import Header from './Header';
 import Loading from './Loading';
 import styles from './App.css';
 
-import { Grid, Row, Col } from 'react-bootstrap';
+import { Grid, Row } from 'react-bootstrap';
 
 import Categories from './Categories';
 import Category from './Category';

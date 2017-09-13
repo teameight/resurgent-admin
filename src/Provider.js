@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
 import Transaction from './Transaction';
 
@@ -45,7 +44,7 @@ class Provider extends Component {
 		let provider = area["providers"][pkey];
 
 		const userId = "user-1";
-		// NEED TO DO: filter these by this provider key, not just display all of user 1. Also need to be able to disable, and/or refund
+		//  TODO: filter these by this provider key, not just display all of user 1. Also need to be able to disable, and/or refund
     const transactions = this.props.transactions[userId];
 
 		const filterTransactions = (pkey) => {
