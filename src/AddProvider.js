@@ -1,12 +1,49 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
+import Dropzone from 'react-dropzone';
+import request from 'superagent';
+
+const CLOUDINARY_UPLOAD_PRESET = 'dydj2q5q';
+const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/dw5sevhx8/upload';
 
 class AddProvider extends Component {
 	constructor(props) {
 		super(props);
 
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.onImageDrop = this.onImageDrop.bind(this);
+		this.handleImageUpload = this.handleImageUpload.bind(this);
+
+		this.state = {
+			uploadedFileCloudinaryUrl: ''
+		}
+	}
+
+	onImageDrop(files) {
+		this.setState({
+			uploadedFile: files[0]
+		});
+
+		this.handleImageUpload(files[0]);
+	}
+
+	handleImageUpload(file) {
+		let upload = request.post(CLOUDINARY_UPLOAD_URL)
+													.field('upload_preset', CLOUDINARY_UPLOAD_PRESET)
+													.field('file', file);
+
+		upload.end((err, response) => {
+			if (err) {
+				console.error(err);
+			}
+
+			if (response.body.secure_url !== '') {
+				this.setState({
+					uploadedFileCloudinaryUrl: response.body.secure_url
+				});
+			}
+		});
 	}
 
 	handleSubmit(e) {
@@ -21,7 +58,7 @@ class AddProvider extends Component {
 			cost: this.cost.value,
 			desc: this.desc.value,
 			area: akey,
-			image: this.image.value,
+			image: this.state.uploadedFileCloudinaryUrl,
 			order: this.order.value,
 			ckey: ckey
 		}
@@ -74,16 +111,24 @@ class AddProvider extends Component {
 							}
 						</select>
 					</div>
-					<div className="form-group">
-						<label htmlFor="formControlsImg" className="control-label">Provider Image Source</label>
-						<input ref={(input) => this.image = input} id="formControlsImg" className="form-control" type="text" name="image" placeholder="img/providers/file.png" />
-					</div>
-
+					<label>Provider Image</label>
+					<Dropzone
+						className="dropzone-box"
+						multiple={false}
+						accept="image/*"
+						onDrop={this.onImageDrop}>
+						<p>Drop an image or click to select a file to upload.</p>
+						{this.state.uploadedFileCloudinaryUrl === '' ? null :
+						<div>
+							<img src={this.state.uploadedFileCloudinaryUrl} />
+						</div>
+						}
+					</Dropzone>
 					<div className="form-group">
 						<label htmlFor="formControlsOrder" className="control-label">Provider Order (0, 1, 2, 3...)</label>
 						<input ref={(input) => this.order = input} required id="formControlsOrder" className="form-control" type="number" name="order" placeholder="0" />
 					</div>
-					<button className="btn btn-primary" type="submit">Add Area</button>
+					<button className="btn btn-primary" type="submit">Add Provider</button>
 				</form>
 			</Col>
 		)

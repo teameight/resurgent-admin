@@ -22,6 +22,7 @@ import Provider from './Provider';
 import AddProvider from './AddProvider';
 import Pages from './Pages';
 import Page from './Page';
+import Users from './Users';
 
 
 
@@ -173,9 +174,9 @@ class App extends Component {
       catsRef.child(ckey).child("areas").child(akey).child('providers').child(pkey).child('name').set(formValue.name);
     }
 
-    if ( formValue.tokens ) {
-      categories[ckey]["areas"][akey]["providers"][pkey].tokens = formValue.tokens;
-      catsRef.child(ckey).child("areas").child(akey).child('providers').child(pkey).child('tokens').set(formValue.tokens);
+    if ( formValue.cost ) {
+      categories[ckey]["areas"][akey]["providers"][pkey].cost = formValue.cost;
+      catsRef.child(ckey).child("areas").child(akey).child('providers').child(pkey).child('cost').set(formValue.cost);
     }
 
     if ( formValue.desc ) {
@@ -311,6 +312,8 @@ class App extends Component {
                       <Route exact path="/providers" render={(props) => <Providers categories={this.state.categories} {...props} />} />
                       <Route path="/providers/:pkey" render={(props) => <Provider categories={this.state.categories} transactions={this.state.transactions} updateProvider={this.updateProvider} users={this.state.users} {...props} />} />
                       <Route path="/add-provider" render={(props) => <AddProvider categories={this.state.categories} addProvider={this.addProvider} {...props} />} />
+                      <Route exact path="/users" render={(props) => <Users users={this.state.users} {...props} />} />
+                      <Route path="/users/:ukey" render={(props) => <Area categories={this.state.categories} updateArea={this.updateArea} {...props} />} />
                       <Route exact path="/pages" render={(props) => <Pages pages={this.state.pages} {...props} />} />
                       <Route path="/pages/:key" render={(props) => <Page pages={this.state.pages} updatePage={this.updatePage} {...props} />} />
                     </Row>

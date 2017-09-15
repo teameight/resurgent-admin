@@ -75,7 +75,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  
   -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
   animation: sk-bounce 2.0s infinite ease-in-out;
 }
@@ -91,10 +90,10 @@
 }
 
 @keyframes sk-bounce {
-  0%, 100% { 
+  0%, 100% {
     transform: scale(0.0);
     -webkit-transform: scale(0.0);
-  } 50% { 
+  } 50% {
     transform: scale(1.0);
     -webkit-transform: scale(1.0);
   }
@@ -114,4 +113,12 @@
 .details-box .details-row {
   display: flex;
   justify-content: space-between;
+}
+
+.dropzone-box {
+  border: 1px dashed;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+  min-height: 200px;
 }

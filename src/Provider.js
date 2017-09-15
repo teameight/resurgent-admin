@@ -1,12 +1,49 @@
 import React, { Component } from 'react';
 import { Col } from 'react-bootstrap';
 import Transaction from './Transaction';
+import Dropzone from 'react-dropzone';
+import request from 'superagent';
+
+const CLOUDINARY_UPLOAD_PRESET = 'dydj2q5q';
+const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/dw5sevhx8/upload';
 
 class Provider extends Component {
 	constructor(props) {
 		super(props);
 
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.onImageDrop = this.onImageDrop.bind(this);
+		this.handleImageUpload = this.handleImageUpload.bind(this);
+
+		this.state = {
+			uploadedFileCloudinaryUrl: ''
+		}
+	}
+
+	onImageDrop(files) {
+		this.setState({
+			uploadedFile: files[0]
+		});
+
+		this.handleImageUpload(files[0]);
+	}
+
+	handleImageUpload(file) {
+		let upload = request.post(CLOUDINARY_UPLOAD_URL)
+													.field('upload_preset', CLOUDINARY_UPLOAD_PRESET)
+													.field('file', file);
+
+		upload.end((err, response) => {
+			if (err) {
+				console.error(err);
+			}
+
+			if (response.body.secure_url !== '') {
+				this.setState({
+					uploadedFileCloudinaryUrl: response.body.secure_url
+				});
+			}
+		});
 	}
 
 	handleSubmit(e) {
@@ -24,7 +61,7 @@ class Provider extends Component {
 			cost: this.cost.value,
 			desc: this.desc.value,
 			area: newArea,
-			image: this.image.value,
+			image: this.state.uploadedFileCloudinaryUrl,
 			order: this.order.value,
 			category: newCat
 		}
@@ -44,14 +81,7 @@ class Provider extends Component {
 
 		const userId = "user-1";
 		//  TODO: filter these by this provider key, not just display all of user 1. Also need to be able to disable, and/or refund
-    const transactions = this.props.transactions[userId];
-
-		const filterTransactions = (pkey) => {
-			return Object.keys(transactions).filter((key) => transactions[key].provider === pkey )
-		}
-
-		const filteredTransactions = filterTransactions(pkey);
-
+    const transactions = this.props.transactions;
 
 		return (
 			<Col md={8} className="admin-screen">
@@ -64,7 +94,7 @@ class Provider extends Component {
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsTokens" className="control-label">Provider Token Cost</label>
-						<input ref={(input) => this.cost = input} id="formControlsTokens" className="form-control" type="text" name="tokens" defaultValue={provider.tokens} placeholder="Provider Token Cost" />
+						<input ref={(input) => this.cost = input} id="formControlsTokens" className="form-control" type="text" name="cost" defaultValue={provider.cost} placeholder="Provider Token Cost" />
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsDesc" className="control-label">Provider Description</label>
@@ -94,10 +124,23 @@ class Provider extends Component {
 							}
 						</select>
 					</div>
-					<div className="form-group">
-						<label htmlFor="formControlsImg" className="control-label">Provider Image Source</label>
-						<input ref={(input) => this.image = input} id="formControlsImg" className="form-control" type="text" name="image" defaultValue={provider.image} placeholder="Provider Image Source" />
-					</div>
+						<label>Area Image</label>
+						<Dropzone
+							className="dropzone-box"
+							multiple={false}
+							accept="image/*"
+							onDrop={this.onImageDrop}>
+							<p>Drop an image or click to select a file to upload.</p>
+							{this.state.uploadedFileCloudinaryUrl === '' ?
+							<div>
+								<img src={provider.image} />
+							</div>
+							 :
+							<div>
+								<img src={this.state.uploadedFileCloudinaryUrl} />
+							</div>
+							}
+						</Dropzone>
 					<div className="form-group">
 						<label htmlFor="formControlsOrder" className="control-label">Provider Order (0, 1, 2, 3...)</label>
 						<input ref={(input) => this.order = input} required id="formControlsOrder" className="form-control" type="number" name="order" defaultValue={provider.order ? provider.order : 0} placeholder="0" />
@@ -110,6 +153,7 @@ class Provider extends Component {
 					// TODO: Filter these to only show current provider transactions
           Object
             .keys(transactions)
+            .filter((current) => transactions[current].provider === pkey)
             .map(key => <Transaction keyId={key} pname={provider.name} cname={category.name} aname={area.name} details={transactions[key]} users={this.props.users} />)
         }
 			</Col>
