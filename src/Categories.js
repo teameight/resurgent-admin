@@ -6,7 +6,9 @@ class Categories extends Component {
 		return (
 			<div className="admin-screen">
 				<h2>Categories</h2>
-				<p>Select a category to edit.</p>
+				<Link className="btn btn-primary" to={{pathname: '/add-category'}}>Add New Category</Link>
+				<p>&nbsp;</p>
+				<p>Or select a category to edit.</p>
 				<ul>
 				{
 					Object
@@ -16,7 +18,6 @@ class Categories extends Component {
 						)
 				}
 				</ul>
-				<Link className="btn btn-primary" to={{pathname: '/add-category'}}>Add New Category</Link>
 			</div>
 		)
 	}

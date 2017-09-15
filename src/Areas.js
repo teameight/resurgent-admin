@@ -6,7 +6,9 @@ class Areas extends Component {
 		return (
 			<div className="admin-screen">
 				<h2>Areas</h2>
-				<p>Select a category or an area to edit.</p>
+				<Link className="btn btn-primary" to={{pathname: '/add-area'}}>Add New Area</Link>
+				<p>&nbsp;</p>
+				<p>Or select a category or an area to edit.</p>
 				<ul>
 				{
 					Object
@@ -16,11 +18,13 @@ class Areas extends Component {
 							<li><Link key={ckey} to={{pathname: '/categories/' + ckey, state: { ckey: ckey } }}>{this.props.categories[ckey].name}</Link></li>
 							<ul>
 							{
-								Object
-									.keys(this.props.categories[ckey]["areas"])
-									.map( akey =>
-										<li><Link key={akey} to={{pathname: '/areas/' + akey, state: { ckey: ckey, akey: akey } }}>{this.props.categories[ckey]["areas"][akey].name}</Link></li>
-									)
+								this.props.categories[ckey]["areas"] && (
+									Object
+										.keys(this.props.categories[ckey]["areas"])
+										.map( akey =>
+											<li><Link key={akey} to={{pathname: '/areas/' + akey, state: { ckey: ckey, akey: akey } }}>{this.props.categories[ckey]["areas"][akey].name}</Link></li>
+										)
+								)
 							}
 							</ul>
 							</div>

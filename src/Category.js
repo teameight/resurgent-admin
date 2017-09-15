@@ -43,11 +43,15 @@ class Category extends Component {
 				<form className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
 					<div className="form-group">
 						<label htmlFor="formControlsName" className="control-label">Category Name</label>
-						<input id="formControlsName" className="form-control" type="text" name="name" defaultValue={category[ckey].name} placeholder="Category Name" onChange={this.handleChange} />
+						<input required id="formControlsName" className="form-control" type="text" name="name" defaultValue={category[ckey].name} placeholder="Category Name" onChange={this.handleChange} />
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsSlug" className="control-label">Category Slug (URL)</label>
-						<input id="formControlsSlug" className="form-control" type="text" name="slug" defaultValue={category[ckey].slug} placeholder="Category Slug" onChange={this.handleChange} />
+						<input required id="formControlsSlug" className="form-control" type="text" name="slug" defaultValue={category[ckey].slug} placeholder="Category Slug" onChange={this.handleChange} />
+					</div>
+					<div className="form-group">
+						<label htmlFor="formControlsOrder" className="control-label">Category Order (0, 1, 2, 3...)</label>
+						<input required id="formControlsOrder" className="form-control" type="number" name="order" defaultValue={category[ckey].order ? category[ckey].order : 0} placeholder="0" onChange={this.handleChange} />
 					</div>
 					<button className="btn btn-primary" type="submit">Update</button>
 				</form>

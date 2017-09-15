@@ -6,75 +6,88 @@ class Area extends Component {
 	constructor(props) {
 		super(props);
 
-		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
-
-		this.state = {
-			formValues: {}
-		}
 	}
 
-	handleChange(e) {
-		e.preventDefault();
-		let formValues = this.state.formValues;
-		let name = e.target.name;
-		let value = e.target.value;
-
-		formValues[name] = value;
-
-		this.setState({formValues})
-	}
 
 	handleSubmit(e) {
 		e.preventDefault();
-		const ckey = this.props.location.state.ckey;
+		let ckey = this.props.location.state.ckey;
 		const akey = this.props.location.state.akey;
-		let formValues = this.state.formValues;
+		const formValues = {
+			name: this.name.value,
+			slug: this.slug.value,
+			category: this.category.value,
+			image: this.image.value,
+			order: this.order.value
+		}
 
 		this.props.updateArea(ckey, akey, formValues);
+		this.props.history.goBack();
+
 	}
 
 	render() {
-		const ckey = this.props.location.state.ckey;
-		const akey = this.props.location.state.akey;
+		let ckey = this.props.location.state.ckey;
+		let akey = this.props.location.state.akey;
 		let category = this.props.categories[ckey];
-		let area = category["areas"][akey];
+		let area = this.props.categories[ckey]["areas"][akey];
 
 		return (
-			<Col md={8} className="admin-screen">
-				<h2>{area.name}</h2>
-				<p>Edit some or all of this area's details</p>
-				<form className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
-					<div className="form-group">
-						<label htmlFor="formControlsName" className="control-label">Area Name</label>
-						<input id="formControlsName" className="form-control" type="text" name="name" defaultValue={area.name} placeholder="Area Name" onChange={this.handleChange} />
-					</div>
-					<div className="form-group">
-						<label htmlFor="formControlsSlug" className="control-label">Area Slug (URL)</label>
-						<input id="formControlsSlug" className="form-control" type="text" name="slug" defaultValue={area.slug} placeholder="Area Slug" onChange={this.handleChange} />
-					</div>
-					<div className="form-group">
-						<label htmlFor="formControlsDesc" className="control-label">Area Description</label>
-						<textarea id="formControlsDesc" className="form-control" name="desc" defaultValue={area.desc} placeholder="Area Description" onChange={this.handleChange} />
-					</div>
-					<div className="form-group">
-						<label htmlFor="formControlsImg" className="control-label">Area Image Source</label>
-						<input id="formControlsImg" className="form-control" type="text" name="image" defaultValue={area.image} placeholder="Area Image Source" onChange={this.handleChange} />
-					</div>
-					<button className="btn btn-primary" type="submit">Update</button>
-				</form>
-				<h3>Providers in this Area</h3>
-				<p>Select a provider to edit.</p>
-				<ul>
-				{
-					Object
-						.keys(area["providers"])
-						.map( pkey =>
-							<li><Link key={pkey} to={{ pathname: '/providers/' + pkey, state: { ckey: ckey, akey: akey, pkey: pkey } }}>{area["providers"][pkey].name}</Link></li>
-						)
-				}
-				</ul>
-			</Col>
+			<div>
+			{
+				area && (
+					<Col md={8} className="admin-screen">
+						<h2>{area.name}</h2>
+						<p>Edit some or all of this area's details</p>
+						<form ref={(input) => this.areaForm = input } className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
+							<div className="form-group">
+								<label htmlFor="formControlsName" className="control-label">Area Name</label>
+								<input ref={(input) => this.name = input } id="formControlsName" className="form-control" type="text" name="name" defaultValue={area.name} placeholder="Area Name" />
+							</div>
+							<div className="form-group">
+								<label htmlFor="formControlsSlug" className="control-label">Area Slug (URL)</label>
+								<input ref={(input) => this.slug = input } id="formControlsSlug" className="form-control" type="text" name="slug" defaultValue={area.slug} placeholder="Area Slug" />
+							</div>
+							<div className="form-group">
+								<label htmlFor="formControlsCategory" className="control-label">Parent Category</label>
+								<select ref={(input) => this.category = input} id="formControlsCategory" className="form-control" name="category" defaultValue={area.category ? area.category : ckey} >
+									{
+										this.props.categories && (
+											Object
+												.keys(this.props.categories)
+												.map( ckey =>
+													<option value={ckey}>{this.props.categories[ckey].name}</option>
+												)
+										)
+									}
+								</select>
+							</div>
+							<div className="form-group">
+								<label htmlFor="formControlsImg" className="control-label">Area Image Source</label>
+								<input ref={(input) => this.image = input } id="formControlsImg" className="form-control" type="text" name="image" defaultValue={area.image} placeholder="Area Image Source" />
+							</div>
+							<div className="form-group">
+								<label htmlFor="formControlsOrder" className="control-label">Area Order (0, 1, 2, 3...)</label>
+								<input ref={(input) => this.order = input } required id="formControlsOrder" className="form-control" type="number" name="order" defaultValue={area.order ? area.order : 0} placeholder="0" />
+							</div>
+							<button className="btn btn-primary" type="submit">Update</button>
+						</form>
+						<h3>Providers in this Area</h3>
+						<p>Select a provider to edit.</p>
+						<ul>
+						{
+							Object
+								.keys(area["providers"])
+								.map( pkey =>
+									<li><Link key={pkey} to={{ pathname: '/providers/' + pkey, state: { ckey: ckey, akey: akey, pkey: pkey } }}>{area["providers"][pkey].name}</Link></li>
+								)
+						}
+						</ul>
+					</Col>
+				)
+			}
+			</div>
 		)
 	}
 }

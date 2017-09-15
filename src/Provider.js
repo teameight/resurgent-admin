@@ -6,23 +6,7 @@ class Provider extends Component {
 	constructor(props) {
 		super(props);
 
-		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
-
-		this.state = {
-			formValues: {}
-		}
-	}
-
-	handleChange(e) {
-		e.preventDefault();
-		let formValues = this.state.formValues;
-		let name = e.target.name;
-		let value = e.target.value;
-
-		formValues[name] = value;
-
-		this.setState({formValues})
 	}
 
 	handleSubmit(e) {
@@ -30,9 +14,24 @@ class Provider extends Component {
 		const ckey = this.props.location.state.ckey;
 		const akey = this.props.location.state.akey;
 		const pkey = this.props.location.state.pkey;
-		let formValues = this.state.formValues;
+		let keys = this.keys.value;
+		keys = keys.split('_');
+		let newCat = keys[0];
+		let newArea = keys[1];
+
+		const formValues = {
+			name: this.name.value,
+			cost: this.cost.value,
+			desc: this.desc.value,
+			area: newArea,
+			image: this.image.value,
+			order: this.order.value,
+			category: newCat
+		}
 
 		this.props.updateProvider(ckey, akey, pkey, formValues);
+		this.props.history.goBack();
+
 	}
 
 	render() {
@@ -58,22 +57,50 @@ class Provider extends Component {
 			<Col md={8} className="admin-screen">
 				<h2>{provider.name}</h2>
 				<p>Edit some or all of this provider's details</p>
-				<form className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
+				<form ref={(input) => this.providerForm = input} className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
 					<div className="form-group">
 						<label htmlFor="formControlsName" className="control-label">Provider Name</label>
-						<input id="formControlsName" className="form-control" type="text" name="name" defaultValue={provider.name} placeholder="Provider Name" onChange={this.handleChange} />
+						<input ref={(input) => this.name = input} id="formControlsName" className="form-control" type="text" name="name" defaultValue={provider.name} placeholder="Provider Name" />
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsTokens" className="control-label">Provider Token Cost</label>
-						<input id="formControlsTokens" className="form-control" type="text" name="tokens" defaultValue={provider.tokens} placeholder="Provider Token Cost" onChange={this.handleChange} />
+						<input ref={(input) => this.cost = input} id="formControlsTokens" className="form-control" type="text" name="tokens" defaultValue={provider.tokens} placeholder="Provider Token Cost" />
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsDesc" className="control-label">Provider Description</label>
-						<textarea id="formControlsDesc" className="form-control" name="desc" defaultValue={provider.desc} placeholder="Provider Description" onChange={this.handleChange} />
+						<textarea ref={(input) => this.desc = input} id="formControlsDesc" className="form-control" name="desc" defaultValue={provider.desc} placeholder="Provider Description" />
+					</div>
+					<div className="form-group">
+						<label htmlFor="formControlsArea" className="control-label">Parent Area</label>
+						<select ref={(input) => this.keys = input} id="formControlsArea" defaultValue={ckey + '_' + akey} className="form-control" name="area">
+							{
+								this.props.categories && (
+									Object
+										.keys(this.props.categories)
+										.map( ckey =>
+											<optgroup label={this.props.categories[ckey].name}>
+												{
+													this.props.categories[ckey]["areas"] && (
+														Object
+															.keys(this.props.categories[ckey]["areas"])
+															.map( akey =>
+																<option value={ckey + '_' + akey}>{this.props.categories[ckey]["areas"][akey].name}</option>
+															)
+													)
+												}
+											</optgroup>
+										)
+								)
+							}
+						</select>
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsImg" className="control-label">Provider Image Source</label>
-						<input id="formControlsImg" className="form-control" type="text" name="image" defaultValue={provider.image} placeholder="Provider Image Source" onChange={this.handleChange} />
+						<input ref={(input) => this.image = input} id="formControlsImg" className="form-control" type="text" name="image" defaultValue={provider.image} placeholder="Provider Image Source" />
+					</div>
+					<div className="form-group">
+						<label htmlFor="formControlsOrder" className="control-label">Provider Order (0, 1, 2, 3...)</label>
+						<input ref={(input) => this.order = input} required id="formControlsOrder" className="form-control" type="number" name="order" defaultValue={provider.order ? provider.order : 0} placeholder="0" />
 					</div>
 					<button className="btn btn-primary" type="submit">Update</button>
 				</form>
