@@ -284,6 +284,12 @@ class App extends Component {
                     <div className="admin-header">
                       <Header showMenu={false} auth={this.props.auth} />
                     </div>
+                    {
+                      this.props.location.loggedOut ?
+                      <p className="text-center mt-1">You have been logged out</p>
+                      :
+                      <p className="text-center mt-1">Click to sign in</p>
+                    }
                     <button type="button" className="btn btn-primary sign-in" onClick={this.login.bind(this)}>Sign In</button>
                   </div>
                 )
