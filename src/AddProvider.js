@@ -55,6 +55,7 @@ class AddProvider extends Component {
 
 		const formValues = {
 			name: this.name.value,
+			email: this.email.value,
 			cost: this.cost.value,
 			desc: this.desc.value,
 			area: akey,
@@ -78,6 +79,10 @@ class AddProvider extends Component {
 					<div className="form-group">
 						<label htmlFor="formControlsName" className="control-label">Provider Name</label>
 						<input ref={(input) => this.name = input} required id="formControlsName" className="form-control" type="text" name="name" placeholder="Provider Name" />
+					</div>
+					<div className="form-group">
+						<label htmlFor="formControlsEmail" className="control-label">Provider Email</label>
+						<input ref={(input) => this.email = input} required id="formControlsEmail" className="form-control" type="email" name="email" placeholder="provider@email.com" />
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsCost" className="control-label">Provider Token Cost</label>

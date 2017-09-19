@@ -58,6 +58,7 @@ class Provider extends Component {
 
 		const formValues = {
 			name: this.name.value,
+			email: this.email.value,
 			cost: this.cost.value,
 			desc: this.desc.value,
 			area: newArea,
@@ -80,7 +81,6 @@ class Provider extends Component {
 		let provider = area["providers"][pkey];
 
 		const userId = "user-1";
-		//  TODO: filter these by this provider key, not just display all of user 1. Also need to be able to disable, and/or refund
     const transactions = this.props.transactions;
 
 		return (
@@ -91,6 +91,10 @@ class Provider extends Component {
 					<div className="form-group">
 						<label htmlFor="formControlsName" className="control-label">Provider Name</label>
 						<input ref={(input) => this.name = input} id="formControlsName" className="form-control" type="text" name="name" defaultValue={provider.name} placeholder="Provider Name" />
+					</div>
+					<div className="form-group">
+						<label htmlFor="formControlsEmail" className="control-label">Provider Email</label>
+						<input ref={(input) => this.email = input} required id="formControlsEmail" className="form-control" type="email" name="email" defaultValue={provider.email} placeholder="provider@email.com" />
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsTokens" className="control-label">Provider Token Cost</label>

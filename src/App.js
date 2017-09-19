@@ -174,6 +174,11 @@ class App extends Component {
       catsRef.child(ckey).child("areas").child(akey).child('providers').child(pkey).child('name').set(formValue.name);
     }
 
+    if ( formValue.email ) {
+      categories[ckey]["areas"][akey]["providers"][pkey].email = formValue.email;
+      catsRef.child(ckey).child("areas").child(akey).child('providers').child(pkey).child('email').set(formValue.email);
+    }
+
     if ( formValue.cost ) {
       categories[ckey]["areas"][akey]["providers"][pkey].cost = formValue.cost;
       catsRef.child(ckey).child("areas").child(akey).child('providers').child(pkey).child('cost').set(formValue.cost);

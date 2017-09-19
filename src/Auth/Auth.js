@@ -5,7 +5,7 @@ export default class Auth {
   auth0 = new auth0.WebAuth({
     domain: 'resurgent.auth0.com',
     clientID: 'urWXualyjoesDRivHJkXkU7eg7ttg3c7',
-    redirectUri: 'http://resurgent-admin.team-eight.com/callback',//'http://resurgent-admin.team-eight.com/callback',
+    redirectUri: process.env.REACT_APP_AUTH_REDIRECT,//'http://resurgent-admin.team-eight.com/callback',
     audience: 'https://api.resurgent.com',
     responseType: 'token id_token',
     scope: 'openid profile read:user edit:user'
