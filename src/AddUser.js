@@ -28,12 +28,20 @@ class AddUser extends Component {
       return;
     }
 
+	  const daysToExpire = parseInt(this.expiration.value, 10);
+    
+		const today = new Date();
+	  let dat = new Date(today);
+	  dat.setDate(dat.getDate() + daysToExpire);
+
+		let expiration = dat.getTime();
+
 		const formValues = {
 			name:this.name.value,
 			email:this.email.value,
 			tokens:this.tokens.value,
 			unregistered:true,
-			expiration:this.expiration.value,
+			expiration:expiration,
 			employer:this.employer.value,
 			classyear:this.classyear.value,
 			practicegroup:this.practicegroup.value,

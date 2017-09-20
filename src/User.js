@@ -20,9 +20,17 @@ class Area extends Component {
 		const ukey = this.props.location.state.ukey;
 		const user = this.props.users[ukey];
 
+		const daysToExpire = parseInt(this.expiration.value, 10);
+    
+		const today = new Date();
+	  let dat = new Date(today);
+	  dat.setDate(dat.getDate() + daysToExpire);
+
+		let expiration = dat.getTime();
+
 		const formValues = {
 			tokens:this.tokens.value,
-			expiration:this.expiration.value,
+			expiration:expiration,
 			employer:this.employer.value,
 			classyear:this.classyear.value,
 			practicegroup:this.practicegroup.value,
@@ -63,9 +71,17 @@ class Area extends Component {
 		const ukey = this.props.location.state.ukey;
 		const user = this.props.users[ukey];
 
+		const today = new Date();
+
+		let difference = user.expiration - today.getTime();
+
+    let daysDifference = Math.round(difference/1000/60/60/24);
+
+    // console.log(daysDifference);
+
 		let invitemessage = "Send invite email to this user?";
 		if(user.invite){
-			invitemessage = "Resend invitation to this user?"
+			invitemessage = "Resend invitation to this user?";
 		}
 		// console.log(user);
 
@@ -77,7 +93,7 @@ class Area extends Component {
 					<div className="form-group">
 						<label htmlFor="formControlsExpiration" className="control-label">Days to Expiration</label>
 						<p>Set the number of days from now that this user's account will expire. Leave the default value to keep the current expiration. Set to 0 to expire this user now.</p>
-						<input ref={(input) => this.expiration = input} required id="formControlsExpiration" className="form-control" type="number" name="expiration" defaultValue={user.expiration} />
+						<input ref={(input) => this.expiration = input} required id="formControlsExpiration" className="form-control" type="number" name="expiration" defaultValue={daysDifference} />
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsTokens" className="control-label">Edit User Tokens</label>
