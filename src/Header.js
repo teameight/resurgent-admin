@@ -4,6 +4,18 @@ import { Link } from 'react-router-dom';
 
 class Header extends Component {
 
+	constructor() {
+    super();
+
+    this.logout = this.logout.bind(this);
+
+  }
+
+	logout(e) {
+  	e.preventDefault();
+  	this.props.logout();
+  };
+
 	render() {
 		return(
 			<Navbar>
@@ -27,7 +39,7 @@ class Header extends Component {
 				        <NavItem href="/providers">Providers</NavItem>
 				        <NavItem href="/users">Users</NavItem>
 				        <NavItem href="/pages">Pages</NavItem>
-				        <NavItem href="/logout">Sign Out</NavItem>
+				        <NavItem onClick={	(e) => this.logout(e)}>Sign Out</NavItem>
 				      </Nav>
 				    </Navbar.Collapse>
 			    )

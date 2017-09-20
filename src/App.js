@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Route, BrowserRouter as Router } from 'react-router-dom';
 import fire from './fire';
-
-import Auth from './Auth/Auth';
 import Callback from './Callback/Callback';
 
 import Header from './Header';
@@ -23,6 +21,7 @@ import AddProvider from './AddProvider';
 import Pages from './Pages';
 import Page from './Page';
 import Users from './Users';
+import Login from './Login';
 
 
 
@@ -33,8 +32,14 @@ class App extends Component {
     // get initial state
     this.state = {
       users: {},
+      user: null,
       categories: {},
-      pages: {}
+      pages: {},
+      loggedOut : false,
+      isModal: false,
+      authed: false,
+      loading: true,
+      notices: []
     }
 
     this.updateCategory = this.updateCategory.bind(this);
@@ -43,6 +48,38 @@ class App extends Component {
     this.updatePage = this.updatePage.bind(this);
     this.removeByKey = this.removeByKey.bind(this);
 
+    this.logout = this.logout.bind(this);
+    this.setLogin = this.setLogin.bind(this);
+    this.setUser = this.setUser.bind(this);
+    this.initUser = this.initUser.bind(this);
+    this.refUser = this.refUser.bind(this);
+
+    this.handleCloseNotice = this.handleCloseNotice.bind(this);
+    this.setNotice = this.setNotice.bind(this);
+    this.clearNotices = this.clearNotices.bind(this);
+
+  }
+
+  setNotice(notice) {
+    let newNotices = [];
+    newNotices.push(notice);
+    this.setState({
+      notices:newNotices
+    });
+  }
+
+  handleCloseNotice(key) {
+    let newNotices = this.state.notices.slice();
+    newNotices.splice(key, 1);
+    this.setState(
+      { notices: newNotices }
+    );
+  }
+
+  clearNotices() {
+    this.setState({
+      notices:[]
+    });
   }
 
   updateCategory(key, formValue) {
@@ -81,7 +118,7 @@ class App extends Component {
       .reduce((result, current) => {
         result[current] = myObj[current];
         return result;
-        console.log(result);
+        // console.log(result);
     }, {});
   }
 
@@ -257,6 +294,22 @@ class App extends Component {
       });
     });
 
+    this.removeListener = fire.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({
+          authed: true,
+          loading: false
+        })
+        this.refUser();
+      } else {
+        this.setState({
+          authed: false,
+          loading: false,
+          user: null
+        })
+      }
+    });
+
   }
 
   goTo(route) {
@@ -266,77 +319,155 @@ class App extends Component {
   login() {
     this.props.auth.login();
   }
+  setLogin() {
+    this.setState({
+      loggedOut: false
+    });
+  }
 
   logout() {
-    this.props.auth.logout();
+    let that=this;
+    fire.auth().signOut().then(function() {
+      that.setState({
+        loggedOut:true,
+        authed: false,
+        user:null
+      });
+    }).catch(function(error) {
+    });
+  }
+
+  componentWillUnmount () {
+    this.removeListener();
+  }
+
+  refUser () {
+    if(this.state.authed){
+      var user = fire.auth().currentUser;
+      var name, email, photoUrl, uid, emailVerified;
+
+      if (user != null) {
+
+        const uid = user.uid;
+
+        let userObj = {
+          name: user.displayName,
+          email: user.email,
+          photoUrl: user.photoURL,
+          emailVerified: user.emailVerified,
+          uid: user.uid
+        };
+
+        let initUser = this.initUser;
+
+        var usersRef = fire.database().ref('users/' + uid );
+        usersRef.on('value', function(snapshot) {
+          let users = snapshot.val();
+
+          initUser(users, userObj);
+
+        });
+      }
+    }
+  }
+
+  initUser(userMeta, userObj){
+
+    const uid = userObj.uid;
+
+    if(userMeta){
+
+      userObj.tokens = userMeta.tokens;
+
+    }else{
+      const usersRef = fire.database().ref('users');
+
+      let userMeta = {
+        tokens: 50,
+        uid: uid
+      };
+
+      usersRef.child(uid).set(userMeta);
+      userObj.tokens = 50;
+    }
+
+    this.setState({
+      user: userObj
+    })
+
+    var that = this;
+
+    const tRef = fire.database().ref("transactions");
+
+    tRef.orderByChild('uid').equalTo(uid).on("child_added", function(snapshot) {
+      let items = snapshot.val();
+      // console.log(items.type);
+      if(items.type === "book-a-session"){
+        let currentTs = that.state.transactions;
+
+        currentTs[snapshot.key] = items;
+        that.setState({
+          transactions: currentTs
+        });
+      }
+    });
+  }
+
+  setUser(userObj) {
+
+    this.setState({
+      user: userObj
+    });
+
   }
 
 
   render() {
-    const { isAuthenticated } = this.props.auth;
     let categories = this.state.categories;
     let noData = (Object.keys(categories).length === 0 && categories.constructor === Object);
-
-    if(this.props.location.pathname === '/logout'){
-      this.logout();
-    }
+    let isAuthed = this.state.authed;
 
     return (
         <div>
-          {
-              !isAuthenticated() && (
-                  <div className="admin">
-                    <div className="admin-header">
-                      <Header showMenu={false} auth={this.props.auth} />
-                    </div>
-                    {
-                      this.props.location.loggedOut ?
-                      <p className="text-center mt-1">You have been logged out</p>
-                      :
-                      <p className="text-center mt-1">Click to sign in</p>
-                    }
-                    <button type="button" className="btn btn-primary sign-in" onClick={this.login.bind(this)}>Sign In</button>
-                  </div>
-                )
+          <div className="admin">
+            <div className="admin-header">
+              <Header showMenu={true} auth={this.props.auth} logout={this.logout} />
+            </div>
+            {
+              !isAuthed && !noData && (
+                <Login loggedOut={this.state.loggedOut} clearNotices={this.clearNotices} notices={this.state.notices} setNotice={this.setNotice} />
+              )
             }
             {
-              isAuthenticated() && (
-          <div className="admin">
-              <div className="admin-header">
-                <Header showMenu={true} auth={this.props.auth} />
-              </div>
-              {
-                noData && (
+              isAuthed && noData && (
                   <Loading />
-                )
-              }
-              {
-                !noData && (
-                  <Grid>
-                    <Row className="show-grid">
-                      <Route exact path="/" render={(props) => <Categories categories={this.state.categories} {...props} />} />
-                      <Route path="/categories/:ckey" render={(props) => <Category categories={this.state.categories} updateCategory={this.updateCategory} {...props} />} />
-                      <Route path="/add-category" render={(props) => <AddCategory categories={this.state.categories} addCategory={this.addCategory} {...props} />} />
-                      <Route exact path="/areas" render={(props) => <Areas categories={this.state.categories} {...props} />} />
-                      <Route path="/areas/:akey" render={(props) => <Area categories={this.state.categories} updateArea={this.updateArea} {...props} />} />
-                      <Route path="/add-area" render={(props) => <AddArea categories={this.state.categories} addArea={this.addArea} {...props} />} />
-                      <Route exact path="/providers" render={(props) => <Providers categories={this.state.categories} {...props} />} />
-                      <Route path="/providers/:pkey" render={(props) => <Provider categories={this.state.categories} transactions={this.state.transactions} updateProvider={this.updateProvider} users={this.state.users} {...props} />} />
-                      <Route path="/add-provider" render={(props) => <AddProvider categories={this.state.categories} addProvider={this.addProvider} {...props} />} />
-                      <Route exact path="/users" render={(props) => <Users users={this.state.users} {...props} />} />
-                      <Route path="/users/:ukey" render={(props) => <Area categories={this.state.categories} updateArea={this.updateArea} {...props} />} />
-                      <Route exact path="/pages" render={(props) => <Pages pages={this.state.pages} {...props} />} />
-                      <Route path="/pages/:key" render={(props) => <Page pages={this.state.pages} updatePage={this.updatePage} {...props} />} />
-                    </Row>
-                  </Grid>
-                )
-              }
-            </div>
-            )
-          }
+              )
+            }
+            {
+              isAuthed && !noData && (
+                <Grid>
+                  <Row className="show-grid">
+                    <Route exact path="/" render={(props) => <Categories categories={this.state.categories} {...props} />} />
+                    <Route path="/categories/:ckey" render={(props) => <Category categories={this.state.categories} updateCategory={this.updateCategory} {...props} />} />
+                    <Route path="/add-category" render={(props) => <AddCategory categories={this.state.categories} addCategory={this.addCategory} {...props} />} />
+                    <Route exact path="/areas" render={(props) => <Areas categories={this.state.categories} {...props} />} />
+                    <Route path="/areas/:akey" render={(props) => <Area categories={this.state.categories} updateArea={this.updateArea} {...props} />} />
+                    <Route path="/add-area" render={(props) => <AddArea categories={this.state.categories} addArea={this.addArea} {...props} />} />
+                    <Route exact path="/providers" render={(props) => <Providers categories={this.state.categories} {...props} />} />
+                    <Route path="/providers/:pkey" render={(props) => <Provider categories={this.state.categories} transactions={this.state.transactions} updateProvider={this.updateProvider} users={this.state.users} {...props} />} />
+                    <Route path="/add-provider" render={(props) => <AddProvider categories={this.state.categories} addProvider={this.addProvider} {...props} />} />
+                    <Route exact path="/users" render={(props) => <Users users={this.state.users} {...props} />} />
+                    <Route path="/users/:ukey" render={(props) => <Area categories={this.state.categories} updateArea={this.updateArea} {...props} />} />
+                    <Route exact path="/pages" render={(props) => <Pages pages={this.state.pages} {...props} />} />
+                    <Route path="/pages/:key" render={(props) => <Page pages={this.state.pages} updatePage={this.updatePage} {...props} />} />
+                  </Row>
+                </Grid>
+              )
+            }
+        </div>
       </div>
-    )
+      )
+    }
   }
-}
 
 export default App;
