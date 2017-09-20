@@ -21,6 +21,8 @@ import AddProvider from './AddProvider';
 import Pages from './Pages';
 import Page from './Page';
 import Users from './Users';
+import User from './User';
+import AddUser from './AddUser';
 import Login from './Login';
 
 
@@ -384,7 +386,11 @@ class App extends Component {
 
       let userMeta = {
         tokens: 50,
-        uid: uid
+        uid: uid,
+        email: '',
+        name: '',
+        unregistered: true,
+        expiration: ''
       };
 
       usersRef.child(uid).set(userMeta);
@@ -456,8 +462,9 @@ class App extends Component {
                     <Route exact path="/providers" render={(props) => <Providers categories={this.state.categories} {...props} />} />
                     <Route path="/providers/:pkey" render={(props) => <Provider categories={this.state.categories} transactions={this.state.transactions} updateProvider={this.updateProvider} users={this.state.users} {...props} />} />
                     <Route path="/add-provider" render={(props) => <AddProvider categories={this.state.categories} addProvider={this.addProvider} {...props} />} />
-                    <Route exact path="/users" render={(props) => <Users users={this.state.users} {...props} />} />
-                    <Route path="/users/:ukey" render={(props) => <Area categories={this.state.categories} updateArea={this.updateArea} {...props} />} />
+                    <Route exact path="/users" render={(props) => <Users users={this.state.users} clearNotices={this.clearNotices} notices={this.state.notices} setNotice={this.setNotice} {...props} />} />
+                    <Route path="/users/:ukey" render={(props) => <User users={this.state.users} clearNotices={this.clearNotices} notices={this.state.notices} setNotice={this.setNotice} {...props} />} />
+                    <Route path="/add-user" render={(props) => <AddUser {...props} />} />
                     <Route exact path="/pages" render={(props) => <Pages pages={this.state.pages} {...props} />} />
                     <Route path="/pages/:key" render={(props) => <Page pages={this.state.pages} updatePage={this.updatePage} {...props} />} />
                   </Row>

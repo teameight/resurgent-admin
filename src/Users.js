@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 class Users extends Component {
+
 	render() {
 		return (
 			<div className="admin-screen">
@@ -14,7 +15,7 @@ class Users extends Component {
 					Object
 						.keys(this.props.users)
 						.map( ukey =>
-							<li><Link key={ukey} to={{pathname: '/users/' + ukey}}>{this.props.users[ukey].uid}</Link></li>
+							<li><Link key={ukey} to={{pathname: '/users/' + ukey, state: { ukey: ukey } }}>{this.props.users[ukey].name} ___</Link></li>
 						)
 				}
 				</ul>
