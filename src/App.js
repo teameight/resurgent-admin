@@ -52,8 +52,6 @@ class App extends Component {
 
     this.logout = this.logout.bind(this);
     this.setLogin = this.setLogin.bind(this);
-    this.setUser = this.setUser.bind(this);
-    this.initUser = this.initUser.bind(this);
     this.refUser = this.refUser.bind(this);
 
     this.handleCloseNotice = this.handleCloseNotice.bind(this);
@@ -359,72 +357,13 @@ class App extends Component {
           emailVerified: user.emailVerified,
           uid: user.uid
         };
-
-        let initUser = this.initUser;
-
-        var usersRef = fire.database().ref('users/' + uid );
-        usersRef.on('value', function(snapshot) {
-          let users = snapshot.val();
-
-          initUser(users, userObj);
-
+        
+        this.setState({
+          user: userObj
         });
+
       }
     }
-  }
-
-  initUser(userMeta, userObj){
-
-    const uid = userObj.uid;
-
-    if(userMeta){
-
-      userObj.tokens = userMeta.tokens;
-
-    }else{
-      const usersRef = fire.database().ref('users');
-
-      let userMeta = {
-        tokens: 50,
-        uid: uid,
-        email: '',
-        name: '',
-        unregistered: true,
-        expiration: ''
-      };
-
-      usersRef.child(uid).set(userMeta);
-      userObj.tokens = 50;
-    }
-
-    this.setState({
-      user: userObj
-    })
-
-    var that = this;
-
-    const tRef = fire.database().ref("transactions");
-
-    tRef.orderByChild('uid').equalTo(uid).on("child_added", function(snapshot) {
-      let items = snapshot.val();
-      // console.log(items.type);
-      if(items.type === "book-a-session"){
-        let currentTs = that.state.transactions;
-
-        currentTs[snapshot.key] = items;
-        that.setState({
-          transactions: currentTs
-        });
-      }
-    });
-  }
-
-  setUser(userObj) {
-
-    this.setState({
-      user: userObj
-    });
-
   }
 
 
