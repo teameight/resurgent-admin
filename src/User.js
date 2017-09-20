@@ -21,8 +21,6 @@ class Area extends Component {
 		const user = this.props.users[ukey];
 
 		const formValues = {
-			name:user.name,
-			email:user.email,
 			tokens:this.tokens.value,
 			expiration:this.expiration.value,
 			employer:this.employer.value,
@@ -42,9 +40,9 @@ class Area extends Component {
 		if(formValues.invite){
     	//send invite to register to this user
     	if(user.invite){
-    		alert('An invitation has been resent to '+formValues.name+'.');
+    		alert('An invitation has been resent to '+user.name+'.');
     	}else{
-    		alert('An invitation has been sent to '+formValues.name+'.');
+    		alert('An invitation has been sent to '+user.name+'.');
     	}
     }
 
@@ -56,7 +54,7 @@ class Area extends Component {
     const userRef = fire.database().ref('users/'+ukey);
     userRef.update(formValues);
 
-    alert('The user '+formValues.name+' has been updated.');
+    alert('The user '+user.name+' has been updated.');
   	
   }
 
