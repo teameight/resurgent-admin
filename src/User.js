@@ -38,7 +38,6 @@ class Area extends Component {
 		}
 
 		this.editUser(ukey, formValues);
-		// this.props.history.goBack();
 	}
 
 	editUser(ukey, formValues) {
@@ -46,12 +45,13 @@ class Area extends Component {
 		const user = this.props.users[ukey];
 
 		if(formValues.invite){
-    	//send invite to register to this user
-    	if(user.invite){
-    		alert('An invitation has been resent to '+user.name+'.');
-    	}else{
-    		alert('An invitation has been sent to '+user.name+'.');
-    	}
+	    var auth = fire.auth();
+			var emailAddress = user.email; //confirm from heroku before setting this
+			auth.sendPasswordResetEmail(emailAddress).then(function() {
+			  alert('An invitation has been sent to '+formValues.name+'.');
+			}).catch(function(error) {
+			  alert('The invitation to '+formValues.name+' failed.');
+			});
     }
 
     // if user has already been invited, but is not being invited again, reset this value to true
@@ -63,6 +63,7 @@ class Area extends Component {
     userRef.update(formValues);
 
     alert('The user '+user.name+' has been updated.');
+    this.props.history.goBack();
   	
   }
 
