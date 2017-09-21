@@ -79,8 +79,6 @@ class Provider extends Component {
 		let category = this.props.categories[ckey];
 		let area = category["areas"][akey];
 		let provider = area["providers"][pkey];
-
-		const userId = "user-1";
     const transactions = this.props.transactions;
 
 		return (
@@ -137,11 +135,11 @@ class Provider extends Component {
 							<p>Drop an image or click to select a file to upload.</p>
 							{this.state.uploadedFileCloudinaryUrl === '' ?
 							<div>
-								<img src={provider.image} />
+								<img src={provider.image} alt={provider.name} />
 							</div>
 							 :
 							<div>
-								<img src={this.state.uploadedFileCloudinaryUrl} />
+								<img src={this.state.uploadedFileCloudinaryUrl} alt={provider.name} />
 							</div>
 							}
 						</Dropzone>

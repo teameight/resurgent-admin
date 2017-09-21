@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
 
 class Page extends Component {

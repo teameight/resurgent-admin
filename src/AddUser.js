@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
-import request from 'superagent';
 import fire from './fire';
+import axios from 'axios';
 
 
 class AddUser extends Component {
@@ -11,7 +10,7 @@ class AddUser extends Component {
 
 		this.handleSubmit = this.handleSubmit.bind(this);
     this.addUser = this.addUser.bind(this);
-
+    this.createUser = this.createUser.bind(this);
 	}
 
 
@@ -29,7 +28,6 @@ class AddUser extends Component {
     }
 
 	  const daysToExpire = parseInt(this.expiration.value, 10);
-    
 		const today = new Date();
 	  let dat = new Date(today);
 	  dat.setDate(dat.getDate() + daysToExpire);
@@ -52,28 +50,41 @@ class AddUser extends Component {
 		// this.props.history.goBack();
 	}
 
+	createUser(data) {
+	  // get user info
+	}
+
 	addUser(formValues) {
 
+		var data = {
+			email: formValues.email,
+			name: formValues.name
+		};
 
-    // TODO:  add the call to the HEROKU endpoint to create the firebase.auth user
-    const uid = formValues.name; //get the uid back from heroku
-    var auth = fire.auth();
-		var emailAddress = formValues.email; //confirm from heroku before setting this
-    
-    const usersRef = fire.database().ref('users');
-    const updates = {};
-    updates[uid] = formValues;
-    usersRef.update(updates);
+		axios.post('https://aqueous-eyrie-70803.herokuapp.com/create-user', data)
+		  .then(function (response) {
+		    const uid = response.data; //get the uid back from heroku
+		    console.log('uid: ', uid);
+		    var auth = fire.auth();
+				var emailAddress = formValues.email; //confirm from heroku before setting this
 
-    alert('The user '+formValues.name+' has been added.');
+		    const usersRef = fire.database().ref('users');
+		    const updates = {};
+		    updates[uid] = formValues;
+		    usersRef.update(updates);
+
+		    alert('The user '+formValues.name+' has been added.');
 
 
-    auth.sendPasswordResetEmail(emailAddress).then(function() {
-		  alert('An invitation has been sent to '+formValues.name+'.');
-		}).catch(function(error) {
-		  alert('The invitation to '+formValues.name+' failed.');
-		});
-  	
+		    auth.sendPasswordResetEmail(emailAddress).then(function() {
+				  alert('An invitation has been sent to '+formValues.name+'.');
+				}).catch(function(error) {
+				  alert('The invitation to '+formValues.name+' failed.');
+				});
+		  })
+		  .catch(function (error) {
+		    console.log(error);
+		  });
   }
 
 	render() {

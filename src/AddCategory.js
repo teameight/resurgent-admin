@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
 
 class AddCategory extends Component {
@@ -22,9 +21,6 @@ class AddCategory extends Component {
 	}
 
 	render() {
-		const ckey = this.props.match.params.ckey;
-		let category = this.props.categories;
-
 		return (
 			<Col md={8} className="admin-screen">
 				<h2>Add New Category</h2>

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
 import fire from './fire';
 
@@ -18,10 +17,7 @@ class Area extends Component {
 
 		// TODO: form validation? which are required?
 		const ukey = this.props.location.state.ukey;
-		const user = this.props.users[ukey];
-
 		const daysToExpire = parseInt(this.expiration.value, 10);
-    
 		const today = new Date();
 	  let dat = new Date(today);
 	  dat.setDate(dat.getDate() + daysToExpire);
@@ -41,7 +37,7 @@ class Area extends Component {
 	}
 
 	editUser(ukey, formValues) {
-    
+
 		const user = this.props.users[ukey];
 
 		if(formValues.invite){

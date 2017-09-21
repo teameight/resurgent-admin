@@ -68,7 +68,6 @@ class Area extends Component {
 	render() {
 		let ckey = this.props.location.state.ckey;
 		let akey = this.props.location.state.akey;
-		let category = this.props.categories[ckey];
 		let area = this.props.categories[ckey]["areas"][akey];
 
 		return (
@@ -110,11 +109,11 @@ class Area extends Component {
 								<p>Drop an image or click to select a file to upload.</p>
 								{this.state.uploadedFileCloudinaryUrl === '' ?
 								<div>
-									<img src={area.image} />
+									<img src={area.image} alt={area.name} />
 								</div>
 								 :
 								<div>
-									<img src={this.state.uploadedFileCloudinaryUrl} />
+									<img src={this.state.uploadedFileCloudinaryUrl} alt={area.name} />
 								</div>
 								}
 							</Dropzone>

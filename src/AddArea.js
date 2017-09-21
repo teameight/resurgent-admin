@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import request from 'superagent';
@@ -61,9 +60,6 @@ class AddArea extends Component {
 	}
 
 	render() {
-		const ckey = this.props.match.params.ckey;
-		let category = this.props.categories;
-
 		return (
 			<Col md={8} className="admin-screen">
 				<h2>Add New Area</h2>
@@ -99,7 +95,7 @@ class AddArea extends Component {
 						<p>Drop an image or click to select a file to upload.</p>
 						{this.state.uploadedFileCloudinaryUrl === '' ? null :
 						<div>
-							<img src={this.state.uploadedFileCloudinaryUrl} />
+							<img src={this.state.uploadedFileCloudinaryUrl} alt="Uploaded img" />
 						</div>
 						}
 					</Dropzone>
