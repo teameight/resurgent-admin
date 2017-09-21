@@ -28,12 +28,20 @@ class AddUser extends Component {
       return;
     }
 
+	  const daysToExpire = parseInt(this.expiration.value, 10);
+    
+		const today = new Date();
+	  let dat = new Date(today);
+	  dat.setDate(dat.getDate() + daysToExpire);
+
+		let expiration = dat.getTime();
+
 		const formValues = {
 			name:this.name.value,
 			email:this.email.value,
 			tokens:this.tokens.value,
 			unregistered:true,
-			expiration:this.expiration.value,
+			expiration:expiration,
 			employer:this.employer.value,
 			classyear:this.classyear.value,
 			practicegroup:this.practicegroup.value,
@@ -49,6 +57,8 @@ class AddUser extends Component {
 
     // TODO:  add the call to the HEROKU endpoint to create the firebase.auth user
     const uid = formValues.name; //get the uid back from heroku
+    var auth = fire.auth();
+		var emailAddress = formValues.email; //confirm from heroku before setting this
     
     const usersRef = fire.database().ref('users');
     const updates = {};
@@ -57,10 +67,12 @@ class AddUser extends Component {
 
     alert('The user '+formValues.name+' has been added.');
 
-    if(formValues.invite){
-    	//send invite to register to this user
-    	alert('An invitation has been sent to '+formValues.name+'.');
-    }
+
+    auth.sendPasswordResetEmail(emailAddress).then(function() {
+		  alert('An invitation has been sent to '+formValues.name+'.');
+		}).catch(function(error) {
+		  alert('The invitation to '+formValues.name+' failed.');
+		});
   	
   }
 
