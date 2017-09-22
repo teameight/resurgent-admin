@@ -80,11 +80,17 @@ class Area extends Component {
 		if(user.invite){
 			invitemessage = "Resend invitation to this user?";
 		}
+
+		let registermessage = 'Has not yet registered.';
+		if(!user.unregistered){
+			registermessage = 'Has registered.';
+		}
 		// console.log(user);
 
 		return (
 			<Col md={8} className="admin-screen">
 				<h2>Update User: {user.name}</h2>
+				<p>{registermessage}</p>
 				<p>email: {user.email}</p>
 				<form ref={(input) => this.userForm = input} className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
 					<div className="form-group">
