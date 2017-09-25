@@ -30,6 +30,7 @@ class Page extends Component {
 		let formValues = this.state.formValues;
 
 		this.props.updatePage(key, formValues);
+		this.props.history.goBack();
 	}
 
 	render() {
