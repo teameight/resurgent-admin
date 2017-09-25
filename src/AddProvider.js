@@ -47,20 +47,15 @@ class AddProvider extends Component {
 
 	handleSubmit(e) {
 		e.preventDefault();
-		let keys = this.keys.value;
-		keys = keys.split('_');
-		let ckey = keys[0];
-		let akey = keys[1];
 
 		const formValues = {
 			name: this.name.value,
 			email: this.email.value,
 			cost: this.cost.value,
 			desc: this.desc.value,
-			area: akey,
+			area: this.area.value,
 			image: this.state.uploadedFileCloudinaryUrl,
-			order: this.order.value,
-			ckey: ckey
+			order: this.order.value
 		}
 
 		this.props.addProvider(formValues);
@@ -90,7 +85,7 @@ class AddProvider extends Component {
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsArea" className="control-label">Parent Area</label>
-						<select ref={(input) => this.keys = input} id="formControlsArea" className="form-control" name="keys">
+						<select ref={(input) => this.area = input} id="formControlsArea" className="form-control" name="keys">
 							{
 								this.props.categories && (
 									Object
@@ -98,11 +93,12 @@ class AddProvider extends Component {
 										.map( ckey =>
 											<optgroup label={this.props.categories[ckey].name}>
 												{
-													this.props.categories[ckey]["areas"] && (
+													this.props.areas && (
 														Object
-															.keys(this.props.categories[ckey]["areas"])
+															.keys(this.props.areas)
+															.filter((current) => this.props.areas[current].category === ckey)
 															.map( akey =>
-																<option value={ckey + '_' + akey}>{this.props.categories[ckey]["areas"][akey].name}</option>
+																<option value={akey}>{this.props.areas[akey].name}</option>
 															)
 													)
 												}

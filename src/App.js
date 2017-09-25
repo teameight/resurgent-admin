@@ -172,68 +172,54 @@ class App extends Component {
     }
   }
 
-  updateProvider(ckey, akey, pkey, formValue) {
-    let categories = {...this.state.categories};
-    let catsRef = fire.database().ref('categories');
-    const oldCat = ckey;
-    const newCat = formValue.category;
-    const oldArea = akey;
-    const newArea = formValue.area;
-
-    if ( oldArea !== newArea ) {
-      let tempProvider = categories[oldCat]["areas"][oldArea]["providers"][pkey];
-      // add area to new cat in state
-      categories[newCat]["areas"][newArea]["providers"][pkey] = tempProvider;
-      // add area to new cat in firebase
-      catsRef.child(newCat).child("areas").child(newArea).child("providers").child(pkey).set(tempProvider);
-      // remove area from old cat in state
-      this.removeByKey(categories[oldCat]["areas"][oldArea]["providers"], pkey);
-      // remove area from old cat in firebase
-      catsRef.child(oldCat).child("areas").child(oldArea).child("providers").child(pkey).remove();
-      // set ckey to new cat for the rest of the updates
-      ckey = newCat;
-      akey = newArea;
-    }
+  updateProvider(pkey, formValue) {
+    let providers = {...this.state.providers};
+    let providersRef = fire.database().ref('providers');
 
     if ( formValue.name ) {
-      categories[ckey]["areas"][akey]["providers"][pkey].name = formValue.name;
-      catsRef.child(ckey).child("areas").child(akey).child('providers').child(pkey).child('name').set(formValue.name);
+      providers[pkey].name = formValue.name;
+      providersRef.child(pkey).child('name').set(formValue.name);
     }
 
     if ( formValue.email ) {
-      categories[ckey]["areas"][akey]["providers"][pkey].email = formValue.email;
-      catsRef.child(ckey).child("areas").child(akey).child('providers').child(pkey).child('email').set(formValue.email);
+      providers[pkey].email = formValue.email;
+      providersRef.child(pkey).child('email').set(formValue.email);
     }
 
     if ( formValue.cost ) {
-      categories[ckey]["areas"][akey]["providers"][pkey].cost = formValue.cost;
-      catsRef.child(ckey).child("areas").child(akey).child('providers').child(pkey).child('cost').set(formValue.cost);
+      providers[pkey].cost = formValue.cost;
+      providersRef.child(pkey).child('cost').set(formValue.cost);
     }
 
     if ( formValue.desc ) {
-      categories[ckey]["areas"][akey]["providers"][pkey].desc = formValue.desc;
-      catsRef.child(ckey).child("areas").child(akey).child('providers').child(pkey).child('desc').set(formValue.desc);
+      providers[pkey].desc = formValue.desc;
+      providersRef.child(pkey).child('desc').set(formValue.desc);
+    }
+
+    if ( formValue.area ) {
+      providers[pkey].area = formValue.area;
+      providersRef.child(pkey).child('area').set(formValue.area);
     }
 
     if ( formValue.image ) {
-      categories[ckey]["areas"][akey]["providers"][pkey].image = formValue.image;
-      catsRef.child(ckey).child("areas").child(akey).child('providers').child(pkey).child('image').set(formValue.image);
+      providers[pkey].image = formValue.image;
+      providersRef.child(pkey).child('image').set(formValue.image);
     }
 
     if ( formValue.order ) {
-      categories[ckey]["areas"][akey]["providers"][pkey].order = formValue.order;
-      catsRef.child(ckey).child("areas").child(akey).child('providers').child(pkey).child('order').set(formValue.order);
+      providers[pkey].order = formValue.order;
+      providersRef.child(pkey).child('order').set(formValue.order);
     } else {
-      categories[ckey]["areas"][akey]["providers"][pkey].order = 0;
-      catsRef.child(ckey).child("areas").child(akey).child('providers').child(pkey).child('order').set(0);
+      providers[pkey].order = 0;
+      providersRef.child(pkey).child('order').set(0);
     }
 
-    this.setState({categories});
+    this.setState({providers});
   }
 
   addProvider(formValue) {
-    if ( formValue.ckey && formValue.area ) {
-      fire.database().ref('categories').child(formValue.ckey).child('areas').child(formValue.area).child('providers').push(formValue);
+    if ( formValue.area ) {
+      fire.database().ref('providers').push(formValue);
     } else {
       alert('Please choose a Parent Area for this Provider');
     }
@@ -362,7 +348,7 @@ class App extends Component {
           emailVerified: user.emailVerified,
           uid: user.uid
         };
-        
+
         this.setState({
           user: userObj
         });
@@ -405,7 +391,7 @@ class App extends Component {
                     <Route path="/add-area" render={(props) => <AddArea categories={this.state.categories} addArea={this.addArea} {...props} />} />
                     <Route exact path="/providers" render={(props) => <Providers categories={this.state.categories} areas={this.state.areas} providers={this.state.providers} {...props} />} />
                     <Route path="/providers/:pkey" render={(props) => <Provider categories={this.state.categories} areas={this.state.areas} providers={this.state.providers} transactions={this.state.transactions} updateProvider={this.updateProvider} users={this.state.users} {...props} />} />
-                    <Route path="/add-provider" render={(props) => <AddProvider categories={this.state.categories} addProvider={this.addProvider} {...props} />} />
+                    <Route path="/add-provider" render={(props) => <AddProvider categories={this.state.categories} areas={this.state.areas} addProvider={this.addProvider} {...props} />} />
                     <Route exact path="/users" render={(props) => <Users users={this.state.users} clearNotices={this.clearNotices} notices={this.state.notices} setNotice={this.setNotice} {...props} />} />
                     <Route path="/users/:ukey" render={(props) => <User users={this.state.users} clearNotices={this.clearNotices} notices={this.state.notices} setNotice={this.setNotice} {...props} />} />
                     <Route path="/add-user" render={(props) => <AddUser {...props} />} />

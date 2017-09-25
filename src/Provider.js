@@ -48,26 +48,19 @@ class Provider extends Component {
 
 	handleSubmit(e) {
 		e.preventDefault();
-		const ckey = this.props.location.state.ckey;
-		const akey = this.props.location.state.akey;
 		const pkey = this.props.location.state.pkey;
-		let keys = this.keys.value;
-		keys = keys.split('_');
-		let newCat = keys[0];
-		let newArea = keys[1];
 
 		const formValues = {
 			name: this.name.value,
 			email: this.email.value,
 			cost: this.cost.value,
 			desc: this.desc.value,
-			area: newArea,
+			area: this.area.value,
 			image: this.state.uploadedFileCloudinaryUrl,
-			order: this.order.value,
-			category: newCat
+			order: this.order.value
 		}
 
-		this.props.updateProvider(ckey, akey, pkey, formValues);
+		this.props.updateProvider(pkey, formValues);
 		this.props.history.goBack();
 
 	}
@@ -104,7 +97,7 @@ class Provider extends Component {
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsArea" className="control-label">Parent Area</label>
-						<select ref={(input) => this.keys = input} id="formControlsArea" defaultValue={ckey + '_' + akey} className="form-control" name="area">
+						<select ref={(input) => this.area = input} id="formControlsArea" defaultValue={akey} className="form-control" name="area">
 							{
 								this.props.categories && (
 									Object
@@ -117,7 +110,7 @@ class Provider extends Component {
 															.keys(this.props.areas)
 															.filter((current) => this.props.areas[current].category === ckey)
 															.map( akey =>
-																<option value={ckey + '_' + akey}>{this.props.areas[akey].name}</option>
+																<option value={akey}>{this.props.areas[akey].name}</option>
 															)
 													)
 												}
@@ -153,7 +146,6 @@ class Provider extends Component {
 
 				<h3 className="instruction">{provider.name} Transaction History</h3>
 				{
-					// TODO: Filter these to only show current provider transactions
           Object
             .keys(transactions)
             .filter((current) => transactions[current].provider === pkey)
