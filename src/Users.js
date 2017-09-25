@@ -15,8 +15,8 @@ class Users extends Component {
 				{
 					Object
 						.keys(this.props.users)
-						.map( ukey => 
-							<li><Link key={ukey} to={{pathname: '/users/' + ukey, state: { ukey: ukey } }}>{this.props.users[ukey].name ? this.props.users[ukey].name : ukey}</Link></li>
+						.map( ukey =>
+							<li key={ukey}><Link key={ukey} to={{pathname: '/users/' + ukey, state: { ukey: ukey } }}>{this.props.users[ukey].name ? this.props.users[ukey].name : ukey}</Link></li>
 						)
 				}
 				</ul>

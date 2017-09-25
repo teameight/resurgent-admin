@@ -77,8 +77,8 @@ class Provider extends Component {
 		const akey = this.props.location.state.akey;
 		let pkey = this.props.location.state.pkey;
 		let category = this.props.categories[ckey];
-		let area = category["areas"][akey];
-		let provider = area["providers"][pkey];
+		let area = this.props.areas[akey];
+		let provider = this.props.providers[pkey];
     const transactions = this.props.transactions;
 
 		return (
@@ -112,11 +112,12 @@ class Provider extends Component {
 										.map( ckey =>
 											<optgroup label={this.props.categories[ckey].name}>
 												{
-													this.props.categories[ckey]["areas"] && (
+													this.props.areas && (
 														Object
-															.keys(this.props.categories[ckey]["areas"])
+															.keys(this.props.areas)
+															.filter((current) => this.props.areas[current].category === ckey)
 															.map( akey =>
-																<option value={ckey + '_' + akey}>{this.props.categories[ckey]["areas"][akey].name}</option>
+																<option value={ckey + '_' + akey}>{this.props.areas[akey].name}</option>
 															)
 													)
 												}

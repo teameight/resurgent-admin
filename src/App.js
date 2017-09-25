@@ -35,6 +35,8 @@ class App extends Component {
       users: {},
       user: null,
       categories: {},
+      areas: {},
+      providers: {},
       pages: {},
       loggedOut : false,
       isModal: false,
@@ -121,62 +123,49 @@ class App extends Component {
     }, {});
   }
 
-  updateArea(ckey, akey, formValue) {
-    let categories = {...this.state.categories};
-    let catsRef = fire.database().ref('categories');
-    const oldCat = ckey;
-    const newCat = formValue.category;
-
-    if ( oldCat !== newCat ) {
-      let tempArea = categories[oldCat]["areas"][akey];
-      // add area to new cat in state
-      categories[newCat]["areas"][akey] = tempArea;
-      // add area to new cat in firebase
-      catsRef.child(newCat).child("areas").child(akey).set(tempArea);
-      // remove area from old cat in state
-      this.removeByKey(categories[oldCat]["areas"], akey);
-      // remove area from old cat in firebase
-      catsRef.child(oldCat).child("areas").child(akey).remove();
-      // set ckey to new cat for the rest of the updates
-      ckey = newCat;
-    }
-
-    console.log(ckey);
+  updateArea(akey, formValue) {
+    let areas = {...this.state.areas};
+    let areasRef = fire.database().ref('areas');
 
     if ( formValue.name ) {
-      categories[ckey]["areas"][akey].name = formValue.name;
-      catsRef.child(ckey).child("areas").child(akey).child('name').set(formValue.name);
+      areas[akey].name = formValue.name;
+      areasRef.child(akey).child('name').set(formValue.name);
     }
 
     if ( formValue.slug ) {
-      categories[ckey]["areas"][akey].slug = formValue.slug;
-      catsRef.child(ckey).child("areas").child(akey).child('slug').set(formValue.slug);
+      areas[akey].slug = formValue.slug;
+      areasRef.child(akey).child('slug').set(formValue.slug);
+    }
+
+    if ( formValue.category ) {
+      areas[akey].category = formValue.category;
+      areasRef.child(akey).child('category').set(formValue.category);
     }
 
     if ( formValue.desc ) {
-      categories[ckey]["areas"][akey].desc = formValue.desc;
-      catsRef.child(ckey).child("areas").child(akey).child('desc').set(formValue.desc);
+      areas[akey].desc = formValue.desc;
+      areasRef.child(akey).child('desc').set(formValue.desc);
     }
 
     if ( formValue.image ) {
-      categories[ckey]["areas"][akey].image = formValue.image;
-      catsRef.child(ckey).child("areas").child(akey).child('image').set(formValue.image);
+      areas[akey].image = formValue.image;
+      areasRef.child(akey).child('image').set(formValue.image);
     }
 
     if ( formValue.order ) {
-      categories[ckey]["areas"][akey].order = formValue.order;
-      catsRef.child(ckey).child("areas").child(akey).child('order').set(formValue.order);
+      areas[akey].order = formValue.order;
+      areasRef.child(akey).child('order').set(formValue.order);
     } else {
-      categories[ckey]["areas"][akey].order = 0;
-      catsRef.child(ckey).child("areas").child(akey).child('order').set(0);
+      areas[akey].order = 0;
+      areasRef.child(akey).child('order').set(0);
     }
 
-    this.setState({categories});
+    this.setState({areas});
   }
 
   addArea(formValue) {
     if ( formValue.category ) {
-      fire.database().ref('categories').child(formValue.category).child('areas').push(formValue);
+      fire.database().ref('areas').push(formValue);
     } else {
       alert('Please choose a Parent Category for this Area');
     }
@@ -293,6 +282,22 @@ class App extends Component {
       });
     });
 
+    const areasRef = fire.database().ref('areas');
+    areasRef.on('value', (snapshot) => {
+      let items = snapshot.val();
+      this.setState({
+        areas: items
+      });
+    });
+
+    const providersRef = fire.database().ref('providers');
+    providersRef.on('value', (snapshot) => {
+      let items = snapshot.val();
+      this.setState({
+        providers: items
+      });
+    });
+
     this.removeListener = fire.auth().onAuthStateChanged((user) => {
       if (user) {
         this.setState({
@@ -391,11 +396,11 @@ class App extends Component {
                     <Route exact path="/" render={(props) => <Categories categories={this.state.categories} {...props} />} />
                     <Route path="/categories/:ckey" render={(props) => <Category categories={this.state.categories} updateCategory={this.updateCategory} {...props} />} />
                     <Route path="/add-category" render={(props) => <AddCategory categories={this.state.categories} addCategory={this.addCategory} {...props} />} />
-                    <Route exact path="/areas" render={(props) => <Areas categories={this.state.categories} {...props} />} />
-                    <Route path="/areas/:akey" render={(props) => <Area categories={this.state.categories} updateArea={this.updateArea} {...props} />} />
+                    <Route exact path="/areas" render={(props) => <Areas areas={this.state.areas} {...props} />} />
+                    <Route path="/areas/:akey" render={(props) => <Area categories={this.state.categories} areas={this.state.areas} updateArea={this.updateArea} {...props} />} />
                     <Route path="/add-area" render={(props) => <AddArea categories={this.state.categories} addArea={this.addArea} {...props} />} />
-                    <Route exact path="/providers" render={(props) => <Providers categories={this.state.categories} {...props} />} />
-                    <Route path="/providers/:pkey" render={(props) => <Provider categories={this.state.categories} transactions={this.state.transactions} updateProvider={this.updateProvider} users={this.state.users} {...props} />} />
+                    <Route exact path="/providers" render={(props) => <Providers categories={this.state.categories} areas={this.state.areas} providers={this.state.providers} {...props} />} />
+                    <Route path="/providers/:pkey" render={(props) => <Provider categories={this.state.categories} areas={this.state.areas} providers={this.state.providers} transactions={this.state.transactions} updateProvider={this.updateProvider} users={this.state.users} {...props} />} />
                     <Route path="/add-provider" render={(props) => <AddProvider categories={this.state.categories} addProvider={this.addProvider} {...props} />} />
                     <Route exact path="/users" render={(props) => <Users users={this.state.users} clearNotices={this.clearNotices} notices={this.state.notices} setNotice={this.setNotice} {...props} />} />
                     <Route path="/users/:ukey" render={(props) => <User users={this.state.users} clearNotices={this.clearNotices} notices={this.state.notices} setNotice={this.setNotice} {...props} />} />

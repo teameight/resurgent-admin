@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import request from 'superagent';
@@ -50,7 +49,6 @@ class Area extends Component {
 
 	handleSubmit(e) {
 		e.preventDefault();
-		let ckey = this.props.location.state.ckey;
 		const akey = this.props.location.state.akey;
 		const formValues = {
 			name: this.name.value,
@@ -60,15 +58,14 @@ class Area extends Component {
 			order: this.order.value
 		}
 
-		this.props.updateArea(ckey, akey, formValues);
+		this.props.updateArea(akey, formValues);
 		this.props.history.goBack();
 
 	}
 
 	render() {
-		let ckey = this.props.location.state.ckey;
 		let akey = this.props.location.state.akey;
-		let area = this.props.categories[ckey]["areas"][akey];
+		let area = this.props.areas[akey];
 
 		return (
 			<div>
@@ -88,13 +85,13 @@ class Area extends Component {
 							</div>
 							<div className="form-group">
 								<label htmlFor="formControlsCategory" className="control-label">Parent Category</label>
-								<select ref={(input) => this.category = input} id="formControlsCategory" className="form-control" name="category" defaultValue={area.category ? area.category : ckey} >
+								<select ref={(input) => this.category = input} id="formControlsCategory" className="form-control" name="category" defaultValue={area.category} >
 									{
 										this.props.categories && (
 											Object
 												.keys(this.props.categories)
 												.map( ckey =>
-													<option value={ckey}>{this.props.categories[ckey].name}</option>
+													<option key={ckey} value={ckey}>{this.props.categories[ckey].name}</option>
 												)
 										)
 									}
@@ -123,17 +120,6 @@ class Area extends Component {
 							</div>
 							<button className="btn btn-primary" type="submit">Update</button>
 						</form>
-						<h3>Providers in this Area</h3>
-						<p>Select a provider to edit.</p>
-						<ul>
-						{
-							Object
-								.keys(area["providers"])
-								.map( pkey =>
-									<li><Link key={pkey} to={{ pathname: '/providers/' + pkey, state: { ckey: ckey, akey: akey, pkey: pkey } }}>{area["providers"][pkey].name}</Link></li>
-								)
-						}
-						</ul>
 					</Col>
 				)
 			}

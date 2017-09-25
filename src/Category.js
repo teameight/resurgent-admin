@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
 
 class Category extends Component {
@@ -45,18 +44,6 @@ class Category extends Component {
 					</div>
 					<button className="btn btn-primary" type="submit">Update</button>
 				</form>
-				<h3>Areas in this Category</h3>
-				<ul>
-				{
-					category[ckey]["areas"] && (
-					Object
-						.keys(category[ckey]["areas"])
-						.map( akey =>
-							<li><Link key={akey} to={{ pathname: '/areas/' + akey, state: { ckey: ckey, akey: akey } }}>{category[ckey]["areas"][akey].name}</Link></li>
-						)
-					)
-				}
-				</ul>
 			</Col>
 		)
 	}
