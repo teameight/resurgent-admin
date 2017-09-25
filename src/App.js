@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, BrowserRouter as Router } from 'react-router-dom';
 import fire from './fire';
+import Callback from './Callback/Callback';
 
 import Header from './Header';
 import Loading from './Loading';
-import './App.css';
+import styles from './App.css';
 
 import { Grid, Row } from 'react-bootstrap';
 
@@ -348,8 +349,11 @@ class App extends Component {
   refUser () {
     if(this.state.authed){
       var user = fire.auth().currentUser;
+      var name, email, photoUrl, uid, emailVerified;
 
       if (user != null) {
+
+        const uid = user.uid;
 
         let userObj = {
           name: user.displayName,
@@ -358,7 +362,7 @@ class App extends Component {
           emailVerified: user.emailVerified,
           uid: user.uid
         };
-
+        
         this.setState({
           user: userObj
         });
