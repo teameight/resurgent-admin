@@ -213,6 +213,10 @@ class App extends Component {
       providers[pkey].order = 0;
       providersRef.child(pkey).child('order').set(0);
     }
+    if ( formValue.archive !== null ) {
+      providers[pkey].isArchived = formValue.archive;
+      providersRef.child(pkey).child('isArchived').set(formValue.archive);
+    }
 
     this.setState({providers});
   }

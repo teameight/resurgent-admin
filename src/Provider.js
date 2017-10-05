@@ -57,7 +57,8 @@ class Provider extends Component {
 			desc: this.desc.value,
 			area: this.area.value,
 			image: this.state.uploadedFileCloudinaryUrl,
-			order: this.order.value
+			order: this.order.value,
+			archive: this.archive.checked
 		}
 
 		this.props.updateProvider(pkey, formValues);
@@ -73,85 +74,102 @@ class Provider extends Component {
 		let area = this.props.areas[akey];
 		let provider = this.props.providers[pkey];
     const transactions = this.props.transactions;
+    let archivemessage = "Archive this provider";
+    if(provider && provider.isArchived){
+    	archivemessage = "Return this provider to active";
+    }
 
 		return (
-			<Col md={8} className="admin-screen">
-				<h2>{provider.name}</h2>
-				<p>Edit some or all of this provider's details</p>
-				<form ref={(input) => this.providerForm = input} className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
-					<div className="form-group">
-						<label htmlFor="formControlsName" className="control-label">Provider Name</label>
-						<input ref={(input) => this.name = input} id="formControlsName" className="form-control" type="text" name="name" defaultValue={provider.name} placeholder="Provider Name" />
-					</div>
-					<div className="form-group">
-						<label htmlFor="formControlsEmail" className="control-label">Provider Email</label>
-						<input ref={(input) => this.email = input} required id="formControlsEmail" className="form-control" type="email" name="email" defaultValue={provider.email} placeholder="provider@email.com" />
-					</div>
-					<div className="form-group">
-						<label htmlFor="formControlsTokens" className="control-label">Provider Token Cost</label>
-						<input ref={(input) => this.cost = input} id="formControlsTokens" className="form-control" type="text" name="cost" defaultValue={provider.cost} placeholder="Provider Token Cost" />
-					</div>
-					<div className="form-group">
-						<label htmlFor="formControlsDesc" className="control-label">Provider Description</label>
-						<textarea ref={(input) => this.desc = input} id="formControlsDesc" className="form-control" name="desc" defaultValue={provider.desc} placeholder="Provider Description" />
-					</div>
-					<div className="form-group">
-						<label htmlFor="formControlsArea" className="control-label">Parent Area</label>
-						<select ref={(input) => this.area = input} id="formControlsArea" defaultValue={akey} className="form-control" name="area">
-							{
-								this.props.categories && (
-									Object
-										.keys(this.props.categories)
-										.map( ckey =>
-											<optgroup label={this.props.categories[ckey].name}>
-												{
-													this.props.areas && (
-														Object
-															.keys(this.props.areas)
-															.filter((current) => this.props.areas[current].category === ckey)
-															.map( akey =>
-																<option value={akey}>{this.props.areas[akey].name}</option>
+			<div>
+			{ 
+				provider && (
+					<Col md={8} className="admin-screen">
+						<h2>{provider.name}</h2>
+						<p>Edit some or all of this provider's details</p>
+						<form ref={(input) => this.providerForm = input} className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
+							<div className="form-group">
+								<label htmlFor="formControlsName" className="control-label">Provider Name</label>
+								<input ref={(input) => this.name = input} id="formControlsName" className="form-control" type="text" name="name" defaultValue={provider.name} placeholder="Provider Name" />
+							</div>
+							<div className="form-group">
+								<label htmlFor="formControlsEmail" className="control-label">Provider Email</label>
+								<input ref={(input) => this.email = input} required id="formControlsEmail" className="form-control" type="email" name="email" defaultValue={provider.email} placeholder="provider@email.com" />
+							</div>
+							<div className="form-group">
+								<label htmlFor="formControlsTokens" className="control-label">Provider Token Cost</label>
+								<input ref={(input) => this.cost = input} id="formControlsTokens" className="form-control" type="text" name="cost" defaultValue={provider.cost} placeholder="Provider Token Cost" />
+							</div>
+							<div className="form-group">
+								<label htmlFor="formControlsDesc" className="control-label">Provider Description</label>
+								<textarea ref={(input) => this.desc = input} id="formControlsDesc" className="form-control" name="desc" defaultValue={provider.desc} placeholder="Provider Description" />
+							</div>
+							<div className="form-group">
+								<label htmlFor="formControlsArea" className="control-label">Parent Area</label>
+								<select ref={(input) => this.area = input} id="formControlsArea" defaultValue={akey} className="form-control" name="area">
+									{
+										this.props.categories && (
+											Object
+												.keys(this.props.categories)
+												.map( ckey =>
+													<optgroup label={this.props.categories[ckey].name}>
+														{
+															this.props.areas && (
+																Object
+																	.keys(this.props.areas)
+																	.filter((current) => this.props.areas[current].category === ckey)
+																	.map( akey =>
+																		<option value={akey}>{this.props.areas[akey].name}</option>
+																	)
 															)
-													)
-												}
-											</optgroup>
+														}
+													</optgroup>
+												)
 										)
-								)
-							}
-						</select>
-					</div>
-						<label>Area Image</label>
-						<Dropzone
-							className="dropzone-box"
-							multiple={false}
-							accept="image/*"
-							onDrop={this.onImageDrop}>
-							<p>Drop an image or click to select a file to upload.</p>
-							{this.state.uploadedFileCloudinaryUrl === '' ?
-							<div>
-								<img src={provider.image} alt={provider.name} />
+									}
+								</select>
 							</div>
-							 :
-							<div>
-								<img src={this.state.uploadedFileCloudinaryUrl} alt={provider.name} />
+								<label>Area Image</label>
+								<Dropzone
+									className="dropzone-box"
+									multiple={false}
+									accept="image/*"
+									onDrop={this.onImageDrop}>
+									<p>Drop an image or click to select a file to upload.</p>
+									{this.state.uploadedFileCloudinaryUrl === '' ?
+									<div>
+										<img src={provider.image} alt={provider.name} />
+									</div>
+									 :
+									<div>
+										<img src={this.state.uploadedFileCloudinaryUrl} alt={provider.name} />
+									</div>
+									}
+								</Dropzone>
+							<div className="form-group">
+								<label htmlFor="formControlsOrder" className="control-label">Provider Order (0, 1, 2, 3...)</label>
+								<input ref={(input) => this.order = input} required id="formControlsOrder" className="form-control" type="number" name="order" defaultValue={provider.order ? provider.order : 0} placeholder="0" />
 							</div>
-							}
-						</Dropzone>
-					<div className="form-group">
-						<label htmlFor="formControlsOrder" className="control-label">Provider Order (0, 1, 2, 3...)</label>
-						<input ref={(input) => this.order = input} required id="formControlsOrder" className="form-control" type="number" name="order" defaultValue={provider.order ? provider.order : 0} placeholder="0" />
-					</div>
-					<button className="btn btn-primary" type="submit">Update</button>
-				</form>
+							<div className="checkbox">
+								<label htmlFor="formControlsArchive" className="control-label">
+									<input ref={(input) => this.archive = input} id="formControlsArchive" type="checkbox" name="archive" /> 
+									{archivemessage}
+								</label>
+							</div>
+							<button className="btn btn-primary" type="submit">Update</button>
+						</form>
 
-				<h3 className="instruction">{provider.name} Transaction History</h3>
-				{
-          Object
-            .keys(transactions)
-            .filter((current) => transactions[current].provider === pkey)
-            .map(key => <Transaction keyId={key} pname={provider.name} cname={category.name} aname={area.name} details={transactions[key]} users={this.props.users} />)
-        }
-			</Col>
+						<h3 className="instruction">{provider.name} Transaction History</h3>
+						{
+		          // Object
+		          //   .keys(transactions)
+		          //   .filter((current) => transactions[current].provider === pkey)
+		          //   .map(key => <Transaction keyId={key} pname={provider.name} cname={category.name} aname={area.name} details={transactions[key]} users={this.props.users} />)
+		        }
+					</Col>
+				)
+			}
+			</div>
+
 		)
 	}
 }
