@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Col } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import request from 'superagent';
+import { Link } from 'react-router-dom';
 
 const CLOUDINARY_UPLOAD_PRESET = 'dydj2q5q';
 const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/dw5sevhx8/upload';
@@ -120,6 +121,20 @@ class Area extends Component {
 							</div>
 							<button className="btn btn-primary" type="submit">Update</button>
 						</form>
+						<p>&nbsp;</p>
+						<p>Manage the active providers in this area. Click through to an individual provider to edit their order number.</p>
+						<div>
+							{
+								Object
+									.keys(this.props.providers)
+									.filter(pkey => !this.props.providers[pkey].isArchived && this.props.providers[pkey].area === akey)
+									.map( pkey =>
+										<p key={pkey}><Link key={pkey} to={{pathname: '/providers/' + pkey, state: { ckey: this.props.providers[pkey].ckey, akey: this.props.providers[pkey].area, pkey: pkey } }}>{this.props.providers[pkey].name}</Link></p>
+									)
+							}
+							</div>
+						<p>&nbsp;</p>
+							
 					</Col>
 				)
 			}

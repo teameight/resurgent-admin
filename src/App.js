@@ -283,11 +283,28 @@ class App extends Component {
       });
     });
 
+    // const providersRef = fire.database().ref('providers');
+    // providersRef.on('value', (snapshot) => {
+    //   let items = snapshot.val();
+    //   this.setState({
+    //     providers: items
+    //   });
+    // });
+
+    let providersObj = {};
+    let key = 1;
+    let that = this;
+
     const providersRef = fire.database().ref('providers');
-    providersRef.on('value', (snapshot) => {
-      let items = snapshot.val();
-      this.setState({
-        providers: items
+    providersRef.orderByChild('order').once('value').then(function(snapshot) {
+      snapshot.forEach(function(data) {
+        providersObj[key] = data.val();
+        providersObj[key].id = data.key;
+        key++;
+      });
+    }).then(function(){
+      that.setState({
+        providers:providersObj
       });
     });
 
@@ -366,7 +383,7 @@ class App extends Component {
 
   render() {
     let categories = this.state.categories;
-    let noData = (Object.keys(categories).length === 0 && categories.constructor === Object);
+    let noData = !(Object.keys(categories).length !== 0 && Object.keys(this.state.providers).length !== 0);
     let isAuthed = this.state.authed;
 
     return (
@@ -393,7 +410,7 @@ class App extends Component {
                     <Route path="/categories/:ckey" render={(props) => <Category categories={this.state.categories} updateCategory={this.updateCategory} {...props} />} />
                     <Route path="/add-category" render={(props) => <AddCategory categories={this.state.categories} addCategory={this.addCategory} {...props} />} />
                     <Route exact path="/areas" render={(props) => <Areas areas={this.state.areas} {...props} />} />
-                    <Route path="/areas/:akey" render={(props) => <Area categories={this.state.categories} areas={this.state.areas} updateArea={this.updateArea} {...props} />} />
+                    <Route path="/areas/:akey" render={(props) => <Area categories={this.state.categories} providers={this.state.providers} areas={this.state.areas} updateArea={this.updateArea} {...props} />} />
                     <Route path="/add-area" render={(props) => <AddArea categories={this.state.categories} addArea={this.addArea} {...props} />} />
                     <Route exact path="/providers" render={(props) => <Providers categories={this.state.categories} areas={this.state.areas} providers={this.state.providers} {...props} />} />
                     <Route path="/providers/:pkey" render={(props) => <Provider categories={this.state.categories} areas={this.state.areas} providers={this.state.providers} transactions={this.state.transactions} updateProvider={this.updateProvider} users={this.state.users} {...props} />} />
