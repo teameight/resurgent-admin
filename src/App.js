@@ -59,6 +59,7 @@ class App extends Component {
     this.handleCloseNotice = this.handleCloseNotice.bind(this);
     this.setNotice = this.setNotice.bind(this);
     this.clearNotices = this.clearNotices.bind(this);
+    this.getFireData = this.getFireData.bind(this);
 
   }
 
@@ -243,6 +244,25 @@ class App extends Component {
 
   componentWillMount() {
 
+    this.removeListener = fire.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({
+          authed: true,
+          loading: false
+        })
+        this.refUser();
+      } else {
+        this.setState({
+          authed: false,
+          loading: false,
+          user: null
+        })
+      }
+    });
+
+  }
+
+  getFireData(){
     const usersRef = fire.database().ref('users');
     usersRef.on('value', (snapshot) => {
       let items = snapshot.val();
@@ -283,14 +303,6 @@ class App extends Component {
       });
     });
 
-    // const providersRef = fire.database().ref('providers');
-    // providersRef.on('value', (snapshot) => {
-    //   let items = snapshot.val();
-    //   this.setState({
-    //     providers: items
-    //   });
-    // });
-
     let providersObj = {};
     let key = 1;
     let that = this;
@@ -307,23 +319,6 @@ class App extends Component {
         providers:providersObj
       });
     });
-
-    this.removeListener = fire.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({
-          authed: true,
-          loading: false
-        })
-        this.refUser();
-      } else {
-        this.setState({
-          authed: false,
-          loading: false,
-          user: null
-        })
-      }
-    });
-
   }
 
   goTo(route) {
@@ -376,6 +371,8 @@ class App extends Component {
           user: userObj
         });
 
+        this.getFireData();
+
       }
     }
   }
@@ -393,7 +390,7 @@ class App extends Component {
               <Header showMenu={true} auth={this.props.auth} logout={this.logout} />
             </div>
             {
-              !isAuthed && !noData && (
+              !isAuthed && (
                 <Login loggedOut={this.state.loggedOut} clearNotices={this.clearNotices} notices={this.state.notices} setNotice={this.setNotice} />
               )
             }
