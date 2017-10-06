@@ -106,6 +106,25 @@
   font-size: 14px;
   border-top: 1px solid gray;
 }
+.details-box.archived {
+  background-color: lightgray;
+}
+
+.details-box.archived .btn-archive {
+  display: none;
+}
+
+.btn-unarchive {
+  display: none;
+}
+
+.details-box.archived .btn-unarchive {
+  display: inline-block;
+}
+
+.details-box.needs-review {
+  border-left: 5px solid #d9534f;
+}
 .details-box.solo {
   border-bottom: 1px solid gray;
 }
@@ -113,6 +132,10 @@
 .details-box .details-row {
   display: flex;
   justify-content: space-between;
+}
+
+.details-buttons button {
+  margin-right: 10px;
 }
 
 .dropzone-box {

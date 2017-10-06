@@ -67,12 +67,14 @@ class Provider extends Component {
 	}
 
 	render() {
-		const ckey = this.props.location.state.ckey;
-		const akey = this.props.location.state.akey;
-		let pkey = this.props.location.state.pkey;
-		let category = this.props.categories[ckey];
-		let area = this.props.areas[akey];
+		let pkey = this.props.match.params.pkey;
 		let provider = this.props.providers[pkey];
+		if ( provider ) {
+			var area = this.props.areas[provider.area];
+		}
+		if ( area ) {
+			var category = this.props.categories[area.category];
+		}
     const transactions = this.props.transactions;
     let archivemessage = "Archive this provider";
     if(provider && provider.isArchived){
@@ -81,7 +83,7 @@ class Provider extends Component {
 
 		return (
 			<div>
-			{ 
+			{
 				provider && (
 					<Col md={8} className="admin-screen">
 						<h2>{provider.name}</h2>
@@ -105,20 +107,20 @@ class Provider extends Component {
 							</div>
 							<div className="form-group">
 								<label htmlFor="formControlsArea" className="control-label">Parent Area</label>
-								<select ref={(input) => this.area = input} id="formControlsArea" defaultValue={akey} className="form-control" name="area">
+								<select ref={(input) => this.area = input} id="formControlsArea" defaultValue={ provider.area } className="form-control" name="area">
 									{
 										this.props.categories && (
 											Object
 												.keys(this.props.categories)
 												.map( ckey =>
-													<optgroup label={this.props.categories[ckey].name}>
+													<optgroup key={ckey} label={this.props.categories[ckey].name}>
 														{
 															this.props.areas && (
 																Object
 																	.keys(this.props.areas)
 																	.filter((current) => this.props.areas[current].category === ckey)
 																	.map( akey =>
-																		<option value={akey}>{this.props.areas[akey].name}</option>
+																		<option key={akey} value={akey}>{this.props.areas[akey].name}</option>
 																	)
 															)
 														}
@@ -160,10 +162,13 @@ class Provider extends Component {
 
 						<h3 className="instruction">{provider.name} Transaction History</h3>
 						{
-		          // Object
-		          //   .keys(transactions)
-		          //   .filter((current) => transactions[current].provider === pkey)
-		          //   .map(key => <Transaction keyId={key} pname={provider.name} cname={category.name} aname={area.name} details={transactions[key]} users={this.props.users} />)
+		          category && area &&  (
+		          	Object
+		            .keys(transactions)
+		            .filter((current) => transactions[current].provider === pkey)
+		            .map(key => <Transaction key={key} keyId={key} pname={provider.name} cname={category.name} aname={area.name} details={transactions[key]} users={this.props.users} transactions={transactions} />)
+		            .reverse()
+		            )
 		        }
 					</Col>
 				)
