@@ -68,7 +68,11 @@ class Provider extends Component {
 
 	render() {
 		let pkey = this.props.match.params.pkey;
-		let provider = this.props.providers[pkey];
+		let providers = this.props.providers;
+		console.log(providers);
+		let objectKey = Object.keys(providers).filter((current) => providers[current].id === pkey);
+		let provider = providers[objectKey];
+		console.log(objectKey);
 		if ( provider ) {
 			var area = this.props.areas[provider.area];
 		}

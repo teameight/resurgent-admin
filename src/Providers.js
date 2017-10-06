@@ -44,7 +44,7 @@ class Providers extends Component {
 									.keys(this.props.providers)
 									.filter(pkey => !this.props.providers[pkey].isArchived)
 									.map( pkey =>
-										<li key={pkey}><Link key={pkey} to={{pathname: '/providers/' + pkey, state: { ckey: this.props.providers[pkey].ckey, akey: this.props.providers[pkey].area, pkey: pkey } }}>{this.props.providers[pkey].name}</Link></li>
+										<li key={pkey}><Link key={pkey} to={{pathname: '/providers/' + this.props.providers[pkey].id, state: { ckey: this.props.providers[pkey].ckey, akey: this.props.providers[pkey].area, pkey: pkey } }}>{this.props.providers[pkey].name}</Link></li>
 									)
 							}
 							</ul>
@@ -61,7 +61,7 @@ class Providers extends Component {
 									.keys(this.props.providers)
 									.filter(pkey => this.props.providers[pkey].isArchived)
 									.map( pkey =>
-										<li key={pkey}><Link key={pkey} to={{pathname: '/providers/' + pkey, state: { ckey: this.props.providers[pkey].ckey, akey: this.props.providers[pkey].area, pkey: pkey } }}>{this.props.providers[pkey].name}</Link></li>
+										<li key={pkey}><Link key={pkey} to={{pathname: '/providers/' + this.props.providers[pkey].id, state: { ckey: this.props.providers[pkey].ckey, akey: this.props.providers[pkey].area, pkey: pkey } }}>{this.props.providers[pkey].name}</Link></li>
 									)
 							}
 							</ul>
