@@ -61,7 +61,7 @@ class AddUser extends Component {
 			name: formValues.name
 		};
 
-		axios.post('https://pure-hollows-29577.herokuapp.com/create-user', data)
+		axios.post('https://aqueous-eyrie-70803.herokuapp.com/create-user', data)
 		  .then(function (response) {
 		    const uid = response.data; //get the uid back from heroku
 		    console.log('uid: ', uid);
