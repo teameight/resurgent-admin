@@ -68,7 +68,9 @@ class Provider extends Component {
 
 	render() {
 		let pkey = this.props.match.params.pkey;
-		let provider = this.props.providers[pkey];
+		let providers = this.props.providers;
+		let objectKey = Object.keys(providers).filter((current) => providers[current].id === pkey);
+		let provider = providers[objectKey];
 		if ( provider ) {
 			var area = this.props.areas[provider.area];
 		}
@@ -153,7 +155,7 @@ class Provider extends Component {
 							</div>
 							<div className="checkbox">
 								<label htmlFor="formControlsArchive" className="control-label">
-									<input ref={(input) => this.archive = input} id="formControlsArchive" type="checkbox" name="archive" /> 
+									<input ref={(input) => this.archive = input} id="formControlsArchive" type="checkbox" name="archive" />
 									{archivemessage}
 								</label>
 							</div>
@@ -166,7 +168,7 @@ class Provider extends Component {
 		          	Object
 		            .keys(transactions)
 		            .filter((current) => transactions[current].provider === pkey)
-		            .map(key => <Transaction key={key} keyId={key} pname={provider.name} cname={category.name} aname={area.name} details={transactions[key]} users={this.props.users} transactions={transactions} />)
+		            .map(key => <Transaction key={key} keyId={key} pname={provider.name} cname={category.name} aname={area.name} details={transactions[key]} users={this.props.users} transactions={transactions} providers={this.props.providers} pkey={objectKey} />)
 		            .reverse()
 		            )
 		        }
