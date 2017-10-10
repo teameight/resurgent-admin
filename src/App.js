@@ -387,7 +387,7 @@ class App extends Component {
               <Header showMenu={true} auth={this.props.auth} logout={this.logout} />
             </div>
             {
-              !isAuthed && (
+              !isAuthed && !this.state.loading && (
                 <Login loggedOut={this.state.loggedOut} clearNotices={this.clearNotices} notices={this.state.notices} setNotice={this.setNotice} />
               )
             }
