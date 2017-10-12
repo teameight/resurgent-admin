@@ -129,12 +129,12 @@ class Area extends Component {
 									.keys(this.props.providers)
 									.filter(pkey => !this.props.providers[pkey].isArchived && this.props.providers[pkey].area === akey)
 									.map( pkey =>
-										<p key={pkey}><Link key={pkey} to={{pathname: '/providers/' + pkey, state: { ckey: this.props.providers[pkey].ckey, akey: this.props.providers[pkey].area, pkey: pkey } }}>{this.props.providers[pkey].name}</Link></p>
+										<p key={pkey}><Link key={pkey} to={{pathname: '/providers/' + this.props.providers[pkey].id, state: { ckey: this.props.providers[pkey].ckey, akey: this.props.providers[pkey].area, pkey: pkey } }}>{this.props.providers[pkey].name}</Link></p>
 									)
 							}
 							</div>
 						<p>&nbsp;</p>
-							
+
 					</Col>
 				)
 			}
