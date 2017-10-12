@@ -56,10 +56,16 @@ class AddUser extends Component {
 
 	addUser(formValues) {
 
+		let that = this;
+
 		var data = {
 			email: formValues.email,
 			name: formValues.name
 		};
+
+		let button = document.getElementById('add-user-btn');
+		button.setAttribute('disabled', true);
+		button.innerHTML = 'Waiting...';
 
 		axios.post('https://pure-hollows-29577.herokuapp.com/create-user', data)
 		  .then(function (response) {
@@ -73,17 +79,26 @@ class AddUser extends Component {
 		    updates[uid] = formValues;
 		    usersRef.update(updates);
 
-		    alert('The user '+formValues.name+' has been added.');
+		    console.log('The user '+formValues.name+' has been added.');
 
 
 		    auth.sendPasswordResetEmail(emailAddress).then(function() {
-				  alert('An invitation has been sent to '+formValues.name+'.');
+				  console.log('An invitation has been sent to '+formValues.name+'.');
+		  		button.className += " btn-success";
+		  		button.innerHTML = 'User Added';
 				}).catch(function(error) {
-				  alert('The invitation to '+formValues.name+' failed.');
+				  console.log('The invitation to '+formValues.name+' failed.');
+		  		button.className += " btn-danger";
+		  		button.innerHTML = 'Error';
 				});
+		  })
+		  .then(function(status) {
+				that.props.history.push('/users', {status: 'added'});
 		  })
 		  .catch(function (error) {
 		    console.log(error);
+	  		button.className += " btn-danger";
+	  		button.innerHTML = 'Error';
 		  });
   }
 
@@ -128,7 +143,7 @@ class AddUser extends Component {
 							Send invite email to this user now?
 						</label>
 					</div>
-					<button className="btn btn-primary" type="submit">Add User</button>
+					<button id="add-user-btn" className="btn btn-primary" type="submit">Add User</button>
 				</form>
 			</Col>
 		)
