@@ -176,47 +176,48 @@ class App extends Component {
   updateProvider(pkey, formValue) {
     let providers = {...this.state.providers};
     let providersRef = fire.database().ref('providers');
+    let pId = providers[pkey].id;
 
     if ( formValue.name ) {
       providers[pkey].name = formValue.name;
-      providersRef.child(pkey).child('name').set(formValue.name);
+      providersRef.child(pId).child('name').set(formValue.name);
     }
 
     if ( formValue.email ) {
       providers[pkey].email = formValue.email;
-      providersRef.child(pkey).child('email').set(formValue.email);
+      providersRef.child(pId).child('email').set(formValue.email);
     }
 
     if ( formValue.cost ) {
       providers[pkey].cost = formValue.cost;
-      providersRef.child(pkey).child('cost').set(formValue.cost);
+      providersRef.child(pId).child('cost').set(formValue.cost);
     }
 
     if ( formValue.desc ) {
       providers[pkey].desc = formValue.desc;
-      providersRef.child(pkey).child('desc').set(formValue.desc);
+      providersRef.child(pId).child('desc').set(formValue.desc);
     }
 
     if ( formValue.area ) {
       providers[pkey].area = formValue.area;
-      providersRef.child(pkey).child('area').set(formValue.area);
+      providersRef.child(pId).child('area').set(formValue.area);
     }
 
     if ( formValue.image ) {
       providers[pkey].image = formValue.image;
-      providersRef.child(pkey).child('image').set(formValue.image);
+      providersRef.child(pId).child('image').set(formValue.image);
     }
 
     if ( formValue.order ) {
       providers[pkey].order = formValue.order;
-      providersRef.child(pkey).child('order').set(formValue.order);
+      providersRef.child(pId).child('order').set(formValue.order);
     } else {
       providers[pkey].order = 0;
-      providersRef.child(pkey).child('order').set(0);
+      providersRef.child(pId).child('order').set(0);
     }
     if ( formValue.archive !== null ) {
       providers[pkey].isArchived = formValue.archive;
-      providersRef.child(pkey).child('isArchived').set(formValue.archive);
+      providersRef.child(pId).child('isArchived').set(formValue.archive);
     }
 
     this.setState({providers});

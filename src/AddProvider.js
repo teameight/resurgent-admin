@@ -77,7 +77,7 @@ class AddProvider extends Component {
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsCost" className="control-label">Provider Token Cost</label>
-						<input ref={(input) => this.cost = input} required id="formControlsCost" className="form-control" type="number" name="cost" placeholder="5" />
+						<input ref={(input) => this.cost = input} required id="formControlsCost" className="form-control" type="text" name="cost" placeholder="5" />
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsDesc" className="control-label">Provider Description</label>

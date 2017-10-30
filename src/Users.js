@@ -5,8 +5,18 @@ class Users extends Component {
 
 	render() {
 
+		let locState = this.props.location.state;
+		if ( locState ) {
+			var status = locState.status;
+		}
+
 		return (
 			<div className="admin-screen">
+				{
+					status === 'added' && (
+						<p style={{color: 'green'}}>User was added</p>
+					)
+				}
 				<h2>Users</h2>
 				<Link className="btn btn-primary" to={{pathname: '/add-user'}}>Add New User</Link>
 				<p>&nbsp;</p>
