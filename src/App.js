@@ -216,8 +216,12 @@ class App extends Component {
       providersRef.child(pId).child('order').set(0);
     }
     if ( formValue.archive !== null ) {
+      if(providers[pkey].isArchived){
+        formValue.archive = !formValue.archive;
+      }
       providers[pkey].isArchived = formValue.archive;
       providersRef.child(pId).child('isArchived').set(formValue.archive);
+      console.log(formValue.archive);
     }
 
     this.setState({providers});
