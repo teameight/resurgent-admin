@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import dateFormat from 'dateformat';
 import fire from './fire';
+import { Link } from 'react-router-dom';
 
 class Transaction extends React.Component {
 
@@ -127,6 +128,7 @@ class Transaction extends React.Component {
         const pName = this.props.pname;
         const aName = this.props.aname;
         const cName = this.props.cname;
+        const uid = details.uid;
         const type = details.type;
         const approved = details.approved;
         const isArchived = details.isArchived;
@@ -150,6 +152,9 @@ class Transaction extends React.Component {
                             <h4>Booked a Session</h4>
                         </div>
                         <div className="details-row">
+                            <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name}</Link></p>
+                        </div>
+                        <div className="details-row">
                             <p>{cName}: {aName}</p>
                             <p><strong>{details.cost} tokens</strong></p>
                         </div>
@@ -170,6 +175,9 @@ class Transaction extends React.Component {
                     <div className={wrapperClass}>
                         <div className="details-row">
                             <h4>Rated or Reviewed</h4>
+                        </div>
+                        <div className="details-row">
+                            <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name}</Link></p>
                         </div>
                         <div className="details-row">
                             <p>{cName}: {aName}</p>
@@ -199,6 +207,9 @@ class Transaction extends React.Component {
                     <div className={wrapperClass}>
                         <div className="details-row">
                             <h4>Signed up for Interview Stream</h4>
+                        </div>
+                        <div className="details-row">
+                            <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name}</Link></p>
                         </div>
                         <div className="details-row">
                             <p>{cName}: {aName}</p>
