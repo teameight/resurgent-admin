@@ -14,7 +14,6 @@ class Transaction extends React.Component {
         this.unarchive = this.unarchive.bind(this);
     }
 
-
     approve() {
         let transactions = this.props.transactions;
         let tId = this.props.keyId;
