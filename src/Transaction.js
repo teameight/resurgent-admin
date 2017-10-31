@@ -194,6 +194,28 @@ class Transaction extends React.Component {
                     </div>
                 )
             }
+            {
+                (type === 'interview-stream') && (
+                    <div className={wrapperClass}>
+                        <div className="details-row">
+                            <h4>Signed up for Interview Stream</h4>
+                        </div>
+                        <div className="details-row">
+                            <p>{cName}: {aName}</p>
+                            <p><strong>{details.cost} tokens</strong></p>
+                        </div>
+                        <div className="details-row">
+                            <p>Provider: <em>{pName}</em></p>
+                            <p>signed up {showDate}</p>
+                        </div>
+                        <div className="details-buttons">
+                            <button className="btn btn-danger btn-archive" onClick={this.archive}>Archive</button>
+                            <button className="btn btn-secondary btn-unarchive" onClick={this.unarchive}>Unarchive</button>
+                        </div>
+
+                    </div>
+                )
+            }
             </div>
 		)
 	}
