@@ -26,6 +26,10 @@ class AddUser extends Component {
       alert('Please enter a name.');
       return;
     }
+    if (this.lastname.value.length < 4) {
+      alert('Please enter a last name.');
+      return;
+    }
 
 	  const daysToExpire = parseInt(this.expiration.value, 10);
 		const today = new Date();
@@ -36,6 +40,7 @@ class AddUser extends Component {
 
 		const formValues = {
 			name:this.name.value,
+			lastname:this.lastname.value,
 			email:this.email.value,
 			tokens:this.tokens.value,
 			unregistered:true,
@@ -109,8 +114,12 @@ class AddUser extends Component {
 				<h2>Add New User</h2>
 				<form ref={(input) => this.userForm = input} className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
 					<div className="form-group">
-						<label htmlFor="formControlsName" className="control-label">User Name</label>
-						<input ref={(input) => this.name = input} required id="formControlsName" className="form-control" type="text" name="name" placeholder="User Name" />
+						<label htmlFor="formControlsName" className="control-label">First Name</label>
+						<input ref={(input) => this.name = input} required id="formControlsName" className="form-control" type="text" name="name" placeholder="First Name" />
+					</div>
+					<div className="form-group">
+						<label htmlFor="formControlsLastName" className="control-label">Last Name</label>
+						<input ref={(input) => this.lastname = input} required id="formControlsLastName" className="form-control" type="text" name="lastname" placeholder="Last Name" />
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsEmail" className="control-label">User Email</label>

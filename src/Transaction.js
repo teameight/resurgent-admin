@@ -152,7 +152,7 @@ class Transaction extends React.Component {
                             <h4>Booked a Session</h4>
                         </div>
                         <div className="details-row">
-                            <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name}</Link></p>
+                            <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name + ' ' + this.props.users[uid].lastname}</Link></p>
                         </div>
                         <div className="details-row">
                             <p>{cName}: {aName}</p>
