@@ -8,7 +8,7 @@ class Transaction extends React.Component {
 
     constructor() {
         super();
-        
+
         this.approve = this.approve.bind(this);
         this.disapprove = this.disapprove.bind(this);
         this.archive = this.archive.bind(this);

@@ -113,6 +113,8 @@ class AddUser extends Component {
 						  });
 			});
 		}
+
+		getFirebaseData();
   }
 
 	render() {
