@@ -25,6 +25,7 @@ class Area extends Component {
 		let expiration = dat.getTime();
 
 		const formValues = {
+			lastname:this.lastname.value,
 			tokens:this.tokens.value,
 			expiration:expiration,
 			employer:this.employer.value,
@@ -43,10 +44,12 @@ class Area extends Component {
 		if(formValues.invite){
 	    var auth = fire.auth();
 			var emailAddress = user.email; //confirm from heroku before setting this
+			console.log(emailAddress);
 			auth.sendPasswordResetEmail(emailAddress).then(function() {
 			  alert('An invitation has been sent to '+formValues.name+'.');
 			}).catch(function(error) {
 			  alert('The invitation to '+formValues.name+' failed.');
+			  console.log(error);
 			});
     }
 
@@ -89,10 +92,15 @@ class Area extends Component {
 
 		return (
 			<Col md={8} className="admin-screen">
-				<h2>Update User: {user.name}</h2>
+				<h2>Update User: {user.name} {user.lastname}</h2>
 				<p>{registermessage}</p>
 				<p>email: {user.email}</p>
 				<form ref={(input) => this.userForm = input} className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
+					
+					<div className="form-group">
+						<label htmlFor="formControlsLastName" className="control-label">Last Name</label>
+						<input ref={(input) => this.lastname = input} required id="formControlsLastName" className="form-control" type="text" name="lastname" placeholder="Last Name" defaultValue={user.lastname} />
+					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsExpiration" className="control-label">Days to Expiration</label>
 						<p>Set the number of days from now that this user's account will expire. Leave the default value to keep the current expiration. Set to 0 to expire this user now.</p>

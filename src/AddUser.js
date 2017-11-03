@@ -26,6 +26,10 @@ class AddUser extends Component {
       alert('Please enter a name.');
       return;
     }
+    if (this.lastname.value.length < 4) {
+      alert('Please enter a last name.');
+      return;
+    }
 
 	  const daysToExpire = parseInt(this.expiration.value, 10);
 		const today = new Date();
@@ -36,6 +40,7 @@ class AddUser extends Component {
 
 		const formValues = {
 			name:this.name.value,
+			lastname:this.lastname.value,
 			email:this.email.value,
 			tokens:this.tokens.value,
 			unregistered:true,
@@ -63,43 +68,53 @@ class AddUser extends Component {
 			name: formValues.name
 		};
 
+    const settings = fire.database().ref('settings');
+    let nodeUrl = '';
 		let button = document.getElementById('add-user-btn');
 		button.setAttribute('disabled', true);
 		button.innerHTML = 'Waiting...';
 
-		axios.post('https://pure-hollows-29577.herokuapp.com/create-user', data)
-		  .then(function (response) {
-		    const uid = response.data; //get the uid back from heroku
-		    console.log('uid: ', uid);
-		    var auth = fire.auth();
-				var emailAddress = formValues.email; //confirm from heroku before setting this
+		function getFirebaseData() {
+			return settings.once('value').then(function(snapshot) {
+        nodeUrl = snapshot.val().nodeUrl;
+      }).then(function() {
+				axios.post(nodeUrl + '/create-user', data)
+						  .then(function (response) {
+						    const uid = response.data; //get the uid back from heroku
+						    console.log('uid: ', uid);
+						    var auth = fire.auth();
+								var emailAddress = formValues.email; //confirm from heroku before setting this
 
-		    const usersRef = fire.database().ref('users');
-		    const updates = {};
-		    updates[uid] = formValues;
-		    usersRef.update(updates);
+						    const usersRef = fire.database().ref('users');
+						    const updates = {};
+						    updates[uid] = formValues;
+						    usersRef.update(updates);
 
-		    console.log('The user '+formValues.name+' has been added.');
+						    console.log('The user '+formValues.name+' has been added.');
 
 
-		    auth.sendPasswordResetEmail(emailAddress).then(function() {
-				  console.log('An invitation has been sent to '+formValues.name+'.');
-		  		button.className += " btn-success";
-		  		button.innerHTML = 'User Added';
-				}).catch(function(error) {
-				  console.log('The invitation to '+formValues.name+' failed.');
-		  		button.className += " btn-danger";
-		  		button.innerHTML = 'Error';
-				});
-		  })
-		  .then(function(status) {
-				that.props.history.push('/users', {status: 'added'});
-		  })
-		  .catch(function (error) {
-		    console.log(error);
-	  		button.className += " btn-danger";
-	  		button.innerHTML = 'Error';
-		  });
+						    auth.sendPasswordResetEmail(emailAddress).then(function() {
+								  console.log('An invitation has been sent to '+formValues.name+'.');
+						  		button.className += " btn-success";
+						  		button.innerHTML = 'User Added';
+								}).catch(function(error) {
+								  console.log('The invitation to '+formValues.name+' failed.');
+						  		button.className += " btn-danger";
+						  		button.innerHTML = 'Error';
+								});
+						  })
+						  .then(function(status) {
+								that.props.history.push('/users', {status: 'added'});
+						  })
+						  .catch(function (error) {
+						    console.log(error);
+					  		button.className += " btn-danger";
+					  		button.innerHTML = 'Error';
+						  });
+			});
+		}
+
+		getFirebaseData();
   }
 
 	render() {
@@ -109,8 +124,12 @@ class AddUser extends Component {
 				<h2>Add New User</h2>
 				<form ref={(input) => this.userForm = input} className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
 					<div className="form-group">
-						<label htmlFor="formControlsName" className="control-label">User Name</label>
-						<input ref={(input) => this.name = input} required id="formControlsName" className="form-control" type="text" name="name" placeholder="User Name" />
+						<label htmlFor="formControlsName" className="control-label">First Name</label>
+						<input ref={(input) => this.name = input} required id="formControlsName" className="form-control" type="text" name="name" placeholder="First Name" />
+					</div>
+					<div className="form-group">
+						<label htmlFor="formControlsLastName" className="control-label">Last Name</label>
+						<input ref={(input) => this.lastname = input} required id="formControlsLastName" className="form-control" type="text" name="lastname" placeholder="Last Name" />
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsEmail" className="control-label">User Email</label>

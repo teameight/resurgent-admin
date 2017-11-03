@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import dateFormat from 'dateformat';
 import fire from './fire';
+import { Link } from 'react-router-dom';
 
 class Transaction extends React.Component {
 
@@ -75,21 +76,27 @@ class Transaction extends React.Component {
         let providers = this.props.providers;
         let pkey = this.props.pkey;
         let pId = providers[pkey].id;
-        let pReviews = providers[pkey].reviews;
-        let currentReview = Object.keys(pReviews).filter((current) => pReviews[current].transaction === tId );
 
-        if ( currentReview.length > 0 ) {
+        if ( transactions[tId].type === 'rating-review') {
+            let pReviews = providers[pkey].reviews;
+            let currentReview = Object.keys(pReviews).filter((current) => pReviews[current].transaction === tId );
+
+            if ( currentReview.length > 0 ) {
+                transactions[tId].isArchived = true;
+                tRef.child(tId).update({'isArchived': true});
+
+                // Update state
+                pReviews[currentReview].isArchived = true;
+                // get ref to providers
+                let pRef = fire.database().ref('providers');
+                // update providers on firebase
+                pRef.child(pId).child('reviews').child(currentReview[0]).update({'isArchived': true});
+            } else {
+                alert('This is not a real transaction and can not be archived');
+            }
+        } else {
             transactions[tId].isArchived = true;
             tRef.child(tId).update({'isArchived': true});
-
-            // Update state
-            pReviews[currentReview].isArchived = true;
-            // get ref to providers
-            let pRef = fire.database().ref('providers');
-            // update providers on firebase
-            pRef.child(pId).child('reviews').child(currentReview[0]).update({'isArchived': true});
-        } else {
-            alert('This is not a real transaction and can not be archived');
         }
     }
 
@@ -101,21 +108,28 @@ class Transaction extends React.Component {
         let providers = this.props.providers;
         let pkey = this.props.pkey;
         let pId = providers[pkey].id;
-        let pReviews = providers[pkey].reviews;
-        let currentReview = Object.keys(pReviews).filter((current) => pReviews[current].transaction === tId );
 
-        if ( currentReview.length > 0 ) {
+        if ( transactions[tId].type === 'rating-review') {
+
+            let pReviews = providers[pkey].reviews;
+            let currentReview = Object.keys(pReviews).filter((current) => pReviews[current].transaction === tId );
+
+            if ( currentReview.length > 0 ) {
+                transactions[tId].isArchived = false;
+                tRef.child(tId).update({'isArchived': false});
+
+                // Update state
+                pReviews[currentReview].isArchived = false;
+                // get ref to providers
+                let pRef = fire.database().ref('providers');
+                // update providers on firebase
+                pRef.child(pId).child('reviews').child(currentReview[0]).update({'isArchived': false});
+            } else {
+                alert('This is not a real transaction and can not be unarchived');
+            }
+        } else {
             transactions[tId].isArchived = false;
             tRef.child(tId).update({'isArchived': false});
-
-            // Update state
-            pReviews[currentReview].isArchived = false;
-            // get ref to providers
-            let pRef = fire.database().ref('providers');
-            // update providers on firebase
-            pRef.child(pId).child('reviews').child(currentReview[0]).update({'isArchived': false});
-        } else {
-            alert('This is not a real transaction and can not be unarchived');
         }
     }
 
@@ -126,6 +140,7 @@ class Transaction extends React.Component {
         const pName = this.props.pname;
         const aName = this.props.aname;
         const cName = this.props.cname;
+        const uid = details.uid;
         const type = details.type;
         const approved = details.approved;
         const isArchived = details.isArchived;
@@ -147,6 +162,9 @@ class Transaction extends React.Component {
                     <div className={wrapperClass}>
                         <div className="details-row">
                             <h4>Booked a Session</h4>
+                        </div>
+                        <div className="details-row">
+                            <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name + ' ' + this.props.users[uid].lastname}</Link></p>
                         </div>
                         <div className="details-row">
                             <p>{cName}: {aName}</p>
@@ -171,6 +189,9 @@ class Transaction extends React.Component {
                             <h4>Rated or Reviewed</h4>
                         </div>
                         <div className="details-row">
+                            <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name}</Link></p>
+                        </div>
+                        <div className="details-row">
                             <p>{cName}: {aName}</p>
                             <p><strong>{details.rating ? details.rating : 'N/A'} star rating</strong></p>
                         </div>
@@ -186,6 +207,31 @@ class Transaction extends React.Component {
                         <div className="details-buttons">
                             <button className="btn btn-primary" onClick={this.approve}>Approve</button>
                             <button className="btn btn-warning" onClick={this.disapprove}>Disapprove</button>
+                            <button className="btn btn-danger btn-archive" onClick={this.archive}>Archive</button>
+                            <button className="btn btn-secondary btn-unarchive" onClick={this.unarchive}>Unarchive</button>
+                        </div>
+
+                    </div>
+                )
+            }
+            {
+                (type === 'interview-stream') && (
+                    <div className={wrapperClass}>
+                        <div className="details-row">
+                            <h4>Signed up for Interview Stream</h4>
+                        </div>
+                        <div className="details-row">
+                            <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name}</Link></p>
+                        </div>
+                        <div className="details-row">
+                            <p>{cName}: {aName}</p>
+                            <p><strong>{details.cost} tokens</strong></p>
+                        </div>
+                        <div className="details-row">
+                            <p>Provider: <em>{pName}</em></p>
+                            <p>signed up {showDate}</p>
+                        </div>
+                        <div className="details-buttons">
                             <button className="btn btn-danger btn-archive" onClick={this.archive}>Archive</button>
                             <button className="btn btn-secondary btn-unarchive" onClick={this.unarchive}>Unarchive</button>
                         </div>
