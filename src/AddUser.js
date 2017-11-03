@@ -68,43 +68,53 @@ class AddUser extends Component {
 			name: formValues.name
 		};
 
+    const settings = fire.database().ref('settings');
+    let nodeUrl = '';
 		let button = document.getElementById('add-user-btn');
 		button.setAttribute('disabled', true);
 		button.innerHTML = 'Waiting...';
 
-		axios.post('https://pure-hollows-29577.herokuapp.com/create-user', data)
-		  .then(function (response) {
-		    const uid = response.data; //get the uid back from heroku
-		    console.log('uid: ', uid);
-		    var auth = fire.auth();
-				var emailAddress = formValues.email; //confirm from heroku before setting this
+		function getFirebaseData() {
+			return settings.once('value').then(function(snapshot) {
+        nodeUrl = snapshot.val().nodeUrl;
+      }).then(function() {
+				axios.post(nodeUrl + '/create-user', data)
+						  .then(function (response) {
+						    const uid = response.data; //get the uid back from heroku
+						    console.log('uid: ', uid);
+						    var auth = fire.auth();
+								var emailAddress = formValues.email; //confirm from heroku before setting this
 
-		    const usersRef = fire.database().ref('users');
-		    const updates = {};
-		    updates[uid] = formValues;
-		    usersRef.update(updates);
+						    const usersRef = fire.database().ref('users');
+						    const updates = {};
+						    updates[uid] = formValues;
+						    usersRef.update(updates);
 
-		    console.log('The user '+formValues.name+' has been added.');
+						    console.log('The user '+formValues.name+' has been added.');
 
 
-		    auth.sendPasswordResetEmail(emailAddress).then(function() {
-				  console.log('An invitation has been sent to '+formValues.name+'.');
-		  		button.className += " btn-success";
-		  		button.innerHTML = 'User Added';
-				}).catch(function(error) {
-				  console.log('The invitation to '+formValues.name+' failed.');
-		  		button.className += " btn-danger";
-		  		button.innerHTML = 'Error';
-				});
-		  })
-		  .then(function(status) {
-				that.props.history.push('/users', {status: 'added'});
-		  })
-		  .catch(function (error) {
-		    console.log(error);
-	  		button.className += " btn-danger";
-	  		button.innerHTML = 'Error';
-		  });
+						    auth.sendPasswordResetEmail(emailAddress).then(function() {
+								  console.log('An invitation has been sent to '+formValues.name+'.');
+						  		button.className += " btn-success";
+						  		button.innerHTML = 'User Added';
+								}).catch(function(error) {
+								  console.log('The invitation to '+formValues.name+' failed.');
+						  		button.className += " btn-danger";
+						  		button.innerHTML = 'Error';
+								});
+						  })
+						  .then(function(status) {
+								that.props.history.push('/users', {status: 'added'});
+						  })
+						  .catch(function (error) {
+						    console.log(error);
+					  		button.className += " btn-danger";
+					  		button.innerHTML = 'Error';
+						  });
+			});
+		}
+
+		getFirebaseData();
   }
 
 	render() {

@@ -8,7 +8,7 @@ class Transaction extends React.Component {
 
     constructor() {
         super();
-        
+
         this.approve = this.approve.bind(this);
         this.disapprove = this.disapprove.bind(this);
         this.archive = this.archive.bind(this);
@@ -77,21 +77,27 @@ class Transaction extends React.Component {
         let providers = this.props.providers;
         let pkey = this.props.pkey;
         let pId = providers[pkey].id;
-        let pReviews = providers[pkey].reviews;
-        let currentReview = Object.keys(pReviews).filter((current) => pReviews[current].transaction === tId );
 
-        if ( currentReview.length > 0 ) {
+        if ( transactions[tId].type === 'rating-review') {
+            let pReviews = providers[pkey].reviews;
+            let currentReview = Object.keys(pReviews).filter((current) => pReviews[current].transaction === tId );
+
+            if ( currentReview.length > 0 ) {
+                transactions[tId].isArchived = true;
+                tRef.child(tId).update({'isArchived': true});
+
+                // Update state
+                pReviews[currentReview].isArchived = true;
+                // get ref to providers
+                let pRef = fire.database().ref('providers');
+                // update providers on firebase
+                pRef.child(pId).child('reviews').child(currentReview[0]).update({'isArchived': true});
+            } else {
+                alert('This is not a real transaction and can not be archived');
+            }
+        } else {
             transactions[tId].isArchived = true;
             tRef.child(tId).update({'isArchived': true});
-
-            // Update state
-            pReviews[currentReview].isArchived = true;
-            // get ref to providers
-            let pRef = fire.database().ref('providers');
-            // update providers on firebase
-            pRef.child(pId).child('reviews').child(currentReview[0]).update({'isArchived': true});
-        } else {
-            alert('This is not a real transaction and can not be archived');
         }
     }
 
@@ -103,21 +109,28 @@ class Transaction extends React.Component {
         let providers = this.props.providers;
         let pkey = this.props.pkey;
         let pId = providers[pkey].id;
-        let pReviews = providers[pkey].reviews;
-        let currentReview = Object.keys(pReviews).filter((current) => pReviews[current].transaction === tId );
 
-        if ( currentReview.length > 0 ) {
+        if ( transactions[tId].type === 'rating-review') {
+
+            let pReviews = providers[pkey].reviews;
+            let currentReview = Object.keys(pReviews).filter((current) => pReviews[current].transaction === tId );
+
+            if ( currentReview.length > 0 ) {
+                transactions[tId].isArchived = false;
+                tRef.child(tId).update({'isArchived': false});
+
+                // Update state
+                pReviews[currentReview].isArchived = false;
+                // get ref to providers
+                let pRef = fire.database().ref('providers');
+                // update providers on firebase
+                pRef.child(pId).child('reviews').child(currentReview[0]).update({'isArchived': false});
+            } else {
+                alert('This is not a real transaction and can not be unarchived');
+            }
+        } else {
             transactions[tId].isArchived = false;
             tRef.child(tId).update({'isArchived': false});
-
-            // Update state
-            pReviews[currentReview].isArchived = false;
-            // get ref to providers
-            let pRef = fire.database().ref('providers');
-            // update providers on firebase
-            pRef.child(pId).child('reviews').child(currentReview[0]).update({'isArchived': false});
-        } else {
-            alert('This is not a real transaction and can not be unarchived');
         }
     }
 
