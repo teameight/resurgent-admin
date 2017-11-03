@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
 import { Col } from 'react-bootstrap';
+import { EditorState, convertToRaw, convertFromRaw, ContentState } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import { Editor } from 'react-draft-wysiwyg';
+import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 class Page extends Component {
 	constructor(props) {
@@ -7,9 +12,11 @@ class Page extends Component {
 
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.onEditorStateChange = this.onEditorStateChange.bind(this);
 
 		this.state = {
-			formValues: {}
+			formValues: {},
+			editorState: EditorState.createEmpty()
 		}
 	}
 
@@ -26,14 +33,21 @@ class Page extends Component {
 
 	handleSubmit(e) {
 		e.preventDefault();
+		const { editorState } = this.state;
 		const key = this.props.match.params.key;
-		let formValues = this.state.formValues;
+		let formValues = draftToHtml(convertToRaw(editorState.getCurrentContent()));
 
 		this.props.updatePage(key, formValues);
 		this.props.history.goBack();
 	}
 
-	render() {
+	onEditorStateChange: Function = (editorState) => {
+    this.setState({
+      editorState,
+    });
+  };
+
+  componentWillMount() {
 		const key = this.props.match.params.key;
 		let pages = this.props.pages;
 		let content = '';
@@ -43,13 +57,19 @@ class Page extends Component {
 			savedContent = pages[key].content;
 		}
 
-		console.log(key);
-
 		if ( savedContent ) {
-			content = savedContent;
+			console.log(savedContent);
+			content = htmlToDraft(savedContent);
 		} else {
 			content = 'Enter page content HTML here';
 		}
+
+		// this.setState({editorState: content});
+  }
+
+	render() {
+		const { editorState } = this.state;
+		const key = this.props.match.params.key;
 
 		return (
 			<Col md={8} className="admin-screen">
@@ -57,10 +77,24 @@ class Page extends Component {
 				<form className="admin-edit" onSubmit={(e) => this.handleSubmit(e)}>
 					<div className="form-group">
 						<label htmlFor="formControlsContent" className="control-label">Page Content</label>
-						<textarea id="formControlsContent" rows="30" className="form-control" name="content" defaultValue={content} placeholder="Page Content" onChange={this.handleChange} />
+						<Editor
+							name="formControlsContent"
+							editorState={editorState}
+						  toolbarClassName="toolbarClassName"
+						  wrapperClassName="wrapperClassName"
+						  editorClassName="editorClassName"
+						  onEditorStateChange={this.onEditorStateChange}
+						/>
+						<textarea
+							rows={5}
+							cols={50}
+		          disabled
+		          value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
+		        />
 					</div>
 					<button className="btn btn-primary" type="submit">Update</button>
 				</form>
+
 			</Col>
 		)
 	}

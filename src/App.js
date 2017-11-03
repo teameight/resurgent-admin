@@ -239,10 +239,12 @@ class App extends Component {
     let pages = {...this.state.pages};
     let pagesRef = fire.database().ref('pages');
 
-    if ( formValue.content ) {
-      pages[key].content = formValue.content;
-      pagesRef.child(key).child('content').set(formValue.content);
+    if ( formValue ) {
+      pages[key].content = formValue;
+      pagesRef.child(key).child('content').set(formValue);
     }
+
+    console.log('value', formValue);
 
     this.setState({pages});
   }
