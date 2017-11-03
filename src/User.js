@@ -44,10 +44,12 @@ class Area extends Component {
 		if(formValues.invite){
 	    var auth = fire.auth();
 			var emailAddress = user.email; //confirm from heroku before setting this
+			console.log(emailAddress);
 			auth.sendPasswordResetEmail(emailAddress).then(function() {
 			  alert('An invitation has been sent to '+formValues.name+'.');
 			}).catch(function(error) {
 			  alert('The invitation to '+formValues.name+' failed.');
+			  console.log(error);
 			});
     }
 
