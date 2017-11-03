@@ -3,6 +3,11 @@ import { Col } from 'react-bootstrap';
 import Transaction from './Transaction';
 import Dropzone from 'react-dropzone';
 import request from 'superagent';
+import { EditorState, convertToRaw, convertFromRaw, convertFromHtml, ContentState, CompositeDecorator, ContentBlock } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import { Editor } from 'react-draft-wysiwyg';
+import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 const CLOUDINARY_UPLOAD_PRESET = 'dydj2q5q';
 const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/dw5sevhx8/upload';
@@ -15,9 +20,39 @@ class Provider extends Component {
 		this.onImageDrop = this.onImageDrop.bind(this);
 		this.handleImageUpload = this.handleImageUpload.bind(this);
 
-		this.state = {
-			uploadedFileCloudinaryUrl: ''
+		let pkey = this.props.match.params.pkey;
+		let providers = this.props.providers;
+		let objectKey = Object.keys(providers).filter((current) => providers[current].id === pkey);
+		let provider = providers[objectKey];
+		let desc = provider.desc;
+		let state;
+
+		if ( desc ) {
+			console.log(desc);
+			const blocksFromHTML = htmlToDraft(desc);
+			state = ContentState.createFromBlockArray(
+				blocksFromHTML.contentBlocks,
+				blocksFromHTML.entityMap,
+			);
+		} else {
+			const blocksFromHTML = htmlToDraft('<p>Provider Description</p>');
+			state = ContentState.createFromBlockArray(
+				blocksFromHTML.contentBlocks,
+				blocksFromHTML.entityMap,
+			);
 		}
+
+		console.log(state);
+
+		this.state = {
+			uploadedFileCloudinaryUrl: '',
+			editorState: EditorState.createWithContent(
+				state,
+			),
+		}
+
+		this.focus = () => this.refs.editor.focus();
+    this.onChange = (editorState) => this.setState({editorState});
 	}
 
 	onImageDrop(files) {
@@ -54,7 +89,7 @@ class Provider extends Component {
 			name: this.name.value,
 			email: this.email.value,
 			cost: this.cost.value,
-			desc: this.desc.value,
+			desc: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
 			area: this.area.value,
 			image: this.state.uploadedFileCloudinaryUrl,
 			order: this.order.value,
@@ -67,6 +102,7 @@ class Provider extends Component {
 	}
 
 	render() {
+		const { editorState } = this.state;
 		let pkey = this.props.match.params.pkey;
 		let providers = this.props.providers;
 		let objectKey = Object.keys(providers).filter((current) => providers[current].id === pkey);
@@ -105,7 +141,15 @@ class Provider extends Component {
 							</div>
 							<div className="form-group">
 								<label htmlFor="formControlsDesc" className="control-label">Provider Description</label>
-								<textarea ref={(input) => this.desc = input} id="formControlsDesc" className="form-control" name="desc" defaultValue={provider.desc} placeholder="Provider Description" />
+								<Editor
+									name="formControlsDesc"
+									editorState={editorState}
+								  toolbarClassName="toolbarClassName"
+								  wrapperClassName="wrapperClassName"
+								  editorClassName="editorClassName"
+								  onEditorStateChange={this.onChange}
+								  ref={(input) => this.desc = input}
+								/>
 							</div>
 							<div className="form-group">
 								<label htmlFor="formControlsArea" className="control-label">Parent Area</label>
