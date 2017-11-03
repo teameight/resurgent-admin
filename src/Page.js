@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Col } from 'react-bootstrap';
-import { EditorState, convertToRaw, convertFromRaw, ContentState } from 'draft-js';
+import { EditorState, convertToRaw, convertFromRaw, convertFromHtml, ContentState, CompositeDecorator, ContentBlock } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { Editor } from 'react-draft-wysiwyg';
@@ -14,10 +14,44 @@ class Page extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.onEditorStateChange = this.onEditorStateChange.bind(this);
 
+		const key = this.props.match.params.key;
+		let pages = this.props.pages;
+		let content = '';
+		let savedContent = '';
+		let state;
+
+		if ( pages ) {
+			savedContent = pages[key].content;
+		}
+
+		if ( savedContent ) {
+			console.log(savedContent);
+			const blocksFromHTML = htmlToDraft(savedContent);
+			state = ContentState.createFromBlockArray(
+				blocksFromHTML.contentBlocks,
+				blocksFromHTML.entityMap,
+			);
+		} else {
+			const blocksFromHTML = htmlToDraft('<p>Enter page content HTML here</p>');
+			state = ContentState.createFromBlockArray(
+				blocksFromHTML.contentBlocks,
+				blocksFromHTML.entityMap,
+			);
+		}
+
 		this.state = {
 			formValues: {},
-			editorState: EditorState.createEmpty()
+			editorState: EditorState.createWithContent(
+				state,
+			),
 		}
+
+		this.focus = () => this.refs.editor.focus();
+    this.onChange = (editorState) => this.setState({editorState});
+    this.logState = () => {
+      const content = this.state.editorState.getCurrentContent();
+      console.log(convertToRaw(content));
+    };
 	}
 
 	handleChange(e) {
@@ -48,21 +82,7 @@ class Page extends Component {
   };
 
   componentWillMount() {
-		const key = this.props.match.params.key;
-		let pages = this.props.pages;
-		let content = '';
-		let savedContent = '';
 
-		if ( pages ) {
-			savedContent = pages[key].content;
-		}
-
-		if ( savedContent ) {
-			console.log(savedContent);
-			content = htmlToDraft(savedContent);
-		} else {
-			content = 'Enter page content HTML here';
-		}
 
 		// this.setState({editorState: content});
   }
@@ -83,14 +103,9 @@ class Page extends Component {
 						  toolbarClassName="toolbarClassName"
 						  wrapperClassName="wrapperClassName"
 						  editorClassName="editorClassName"
-						  onEditorStateChange={this.onEditorStateChange}
+						  onEditorStateChange={this.onChange}
+						  ref="editor"
 						/>
-						<textarea
-							rows={5}
-							cols={50}
-		          disabled
-		          value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
-		        />
 					</div>
 					<button className="btn btn-primary" type="submit">Update</button>
 				</form>
