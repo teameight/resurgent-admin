@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import { Col } from 'react-bootstrap';
 import Dropzone from 'react-dropzone';
 import request from 'superagent';
+import { EditorState, convertToRaw, convertFromRaw, convertFromHtml, ContentState, CompositeDecorator, ContentBlock } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import { Editor } from 'react-draft-wysiwyg';
+import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 const CLOUDINARY_UPLOAD_PRESET = 'dydj2q5q';
 const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/dw5sevhx8/upload';
@@ -15,8 +20,12 @@ class AddProvider extends Component {
 		this.handleImageUpload = this.handleImageUpload.bind(this);
 
 		this.state = {
-			uploadedFileCloudinaryUrl: ''
+			uploadedFileCloudinaryUrl: '',
+			editorState: EditorState.createEmpty()
 		}
+
+		this.focus = () => this.refs.editor.focus();
+    this.onChange = (editorState) => this.setState({editorState});
 	}
 
 	onImageDrop(files) {
@@ -52,7 +61,7 @@ class AddProvider extends Component {
 			name: this.name.value,
 			email: this.email.value,
 			cost: this.cost.value,
-			desc: this.desc.value,
+			desc: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
 			area: this.area.value,
 			image: this.state.uploadedFileCloudinaryUrl,
 			order: this.order.value
@@ -63,6 +72,8 @@ class AddProvider extends Component {
 	}
 
 	render() {
+		const { editorState } = this.state;
+
 		return (
 			<Col md={8} className="admin-screen">
 				<h2>Add New Provider</h2>
@@ -81,7 +92,15 @@ class AddProvider extends Component {
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsDesc" className="control-label">Provider Description</label>
-						<textarea ref={(input) => this.desc = input} id="formControlsDesc" className="form-control" name="desc" placeholder="Provider Description" />
+								<Editor
+									name="formControlsDesc"
+									editorState={editorState}
+								  toolbarClassName="toolbarClassName"
+								  wrapperClassName="wrapperClassName"
+								  editorClassName="editorClassName"
+								  onEditorStateChange={this.onChange}
+								  ref={(input) => this.desc = input}
+								/>
 					</div>
 					<div className="form-group">
 						<label htmlFor="formControlsArea" className="control-label">Parent Area</label>
