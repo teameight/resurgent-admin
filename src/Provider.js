@@ -3,7 +3,7 @@ import { Col } from 'react-bootstrap';
 import Transaction from './Transaction';
 import Dropzone from 'react-dropzone';
 import request from 'superagent';
-import { EditorState, convertToRaw, convertFromRaw, convertFromHtml, ContentState, CompositeDecorator, ContentBlock } from 'draft-js';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { Editor } from 'react-draft-wysiwyg';
@@ -28,7 +28,6 @@ class Provider extends Component {
 		let state;
 
 		if ( desc ) {
-			console.log(desc);
 			const blocksFromHTML = htmlToDraft(desc);
 			state = ContentState.createFromBlockArray(
 				blocksFromHTML.contentBlocks,
@@ -41,8 +40,6 @@ class Provider extends Component {
 				blocksFromHTML.entityMap,
 			);
 		}
-
-		console.log(state);
 
 		this.state = {
 			uploadedFileCloudinaryUrl: '',

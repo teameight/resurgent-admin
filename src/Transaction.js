@@ -141,6 +141,7 @@ class Transaction extends React.Component {
         const aName = this.props.aname;
         const cName = this.props.cname;
         const uid = details.uid;
+        const tUser = this.props.users[uid];
         const type = details.type;
         const approved = details.approved;
         const isArchived = details.isArchived;
@@ -155,92 +156,97 @@ class Transaction extends React.Component {
             wrapperClass = wrapperClass + " archived";
         }
 
-		return (
-            <div>
-            {
-                (type === 'book-a-session') && (
-                    <div className={wrapperClass}>
-                        <div className="details-row">
-                            <h4>Booked a Session</h4>
-                        </div>
-                        <div className="details-row">
-                            <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name + ' ' + this.props.users[uid].lastname}</Link></p>
-                        </div>
-                        <div className="details-row">
-                            <p>{cName}: {aName}</p>
-                            <p><strong>{details.cost} tokens</strong></p>
-                        </div>
-                        <div className="details-row">
-                            <p>Provider: <em>{pName}</em></p>
-                            <p>contacted {showDate}</p>
-                        </div>
-                        <div className="details-buttons">
-                            <button className="btn btn-danger btn-archive" onClick={this.archive}>Archive</button>
-                            <button className="btn btn-secondary btn-unarchive" onClick={this.unarchive}>Unarchive</button>
-                        </div>
+        if ( tUser ) {
 
-                    </div>
-                )
-            }
-            {
-                (type === 'rating-review') && (
-                    <div className={wrapperClass}>
-                        <div className="details-row">
-                            <h4>Rated or Reviewed</h4>
-                        </div>
-                        <div className="details-row">
-                            <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name}</Link></p>
-                        </div>
-                        <div className="details-row">
-                            <p>{cName}: {aName}</p>
-                            <p><strong>{details.rating ? details.rating : 'N/A'} star rating</strong></p>
-                        </div>
-                        <div className="details-row">
-                            {/* Show user name here instead*/}
-                            <p>Provider: <em>{pName}</em></p>
-                            <p>reviewed {showDate}</p>
-                        </div>
-                        <div>
-                            <p>Review Headline: <strong>{details.review.headline}</strong></p>
-                            <p>Review Body: {details.review.message}</p>
-                        </div>
-                        <div className="details-buttons">
-                            <button className="btn btn-primary" onClick={this.approve}>Approve</button>
-                            <button className="btn btn-warning" onClick={this.disapprove}>Disapprove</button>
-                            <button className="btn btn-danger btn-archive" onClick={this.archive}>Archive</button>
-                            <button className="btn btn-secondary btn-unarchive" onClick={this.unarchive}>Unarchive</button>
-                        </div>
+    		return (
+                <div>
+                {
+                    (type === 'book-a-session') && (
+                        <div className={wrapperClass}>
+                            <div className="details-row">
+                                <h4>Booked a Session</h4>
+                            </div>
+                            <div className="details-row">
+                                <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name + ' ' + this.props.users[uid].lastname}</Link></p>
+                            </div>
+                            <div className="details-row">
+                                <p>{cName}: {aName}</p>
+                                <p><strong>{details.cost} tokens</strong></p>
+                            </div>
+                            <div className="details-row">
+                                <p>Provider: <em>{pName}</em></p>
+                                <p>contacted {showDate}</p>
+                            </div>
+                            <div className="details-buttons">
+                                <button className="btn btn-danger btn-archive" onClick={this.archive}>Archive</button>
+                                <button className="btn btn-secondary btn-unarchive" onClick={this.unarchive}>Unarchive</button>
+                            </div>
 
-                    </div>
-                )
-            }
-            {
-                (type === 'interview-stream') && (
-                    <div className={wrapperClass}>
-                        <div className="details-row">
-                            <h4>Signed up for Interview Stream</h4>
                         </div>
-                        <div className="details-row">
-                            <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name}</Link></p>
-                        </div>
-                        <div className="details-row">
-                            <p>{cName}: {aName}</p>
-                            <p><strong>{details.cost} tokens</strong></p>
-                        </div>
-                        <div className="details-row">
-                            <p>Provider: <em>{pName}</em></p>
-                            <p>signed up {showDate}</p>
-                        </div>
-                        <div className="details-buttons">
-                            <button className="btn btn-danger btn-archive" onClick={this.archive}>Archive</button>
-                            <button className="btn btn-secondary btn-unarchive" onClick={this.unarchive}>Unarchive</button>
-                        </div>
+                    )
+                }
+                {
+                    (type === 'rating-review') && (
+                        <div className={wrapperClass}>
+                            <div className="details-row">
+                                <h4>Rated or Reviewed</h4>
+                            </div>
+                            <div className="details-row">
+                                <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name}</Link></p>
+                            </div>
+                            <div className="details-row">
+                                <p>{cName}: {aName}</p>
+                                <p><strong>{details.rating ? details.rating : 'N/A'} star rating</strong></p>
+                            </div>
+                            <div className="details-row">
+                                {/* Show user name here instead*/}
+                                <p>Provider: <em>{pName}</em></p>
+                                <p>reviewed {showDate}</p>
+                            </div>
+                            <div>
+                                <p>Review Headline: <strong>{details.review.headline}</strong></p>
+                                <p>Review Body: {details.review.message}</p>
+                            </div>
+                            <div className="details-buttons">
+                                <button className="btn btn-primary" onClick={this.approve}>Approve</button>
+                                <button className="btn btn-warning" onClick={this.disapprove}>Disapprove</button>
+                                <button className="btn btn-danger btn-archive" onClick={this.archive}>Archive</button>
+                                <button className="btn btn-secondary btn-unarchive" onClick={this.unarchive}>Unarchive</button>
+                            </div>
 
-                    </div>
-                )
-            }
-            </div>
-		)
+                        </div>
+                    )
+                }
+                {
+                    (type === 'interview-stream') && (
+                        <div className={wrapperClass}>
+                            <div className="details-row">
+                                <h4>Signed up for Interview Stream</h4>
+                            </div>
+                            <div className="details-row">
+                                <p>User: <Link to={{pathname: '/users/' + uid, state: { ukey: uid } }}>{this.props.users[uid].name}</Link></p>
+                            </div>
+                            <div className="details-row">
+                                <p>{cName}: {aName}</p>
+                                <p><strong>{details.cost} tokens</strong></p>
+                            </div>
+                            <div className="details-row">
+                                <p>Provider: <em>{pName}</em></p>
+                                <p>signed up {showDate}</p>
+                            </div>
+                            <div className="details-buttons">
+                                <button className="btn btn-danger btn-archive" onClick={this.archive}>Archive</button>
+                                <button className="btn btn-secondary btn-unarchive" onClick={this.unarchive}>Unarchive</button>
+                            </div>
+
+                        </div>
+                    )
+                }
+                </div>
+    		)
+        } else {
+            return null
+        }
 	}
 }
 
