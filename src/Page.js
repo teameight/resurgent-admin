@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Col } from 'react-bootstrap';
-import { EditorState, convertToRaw, convertFromRaw, convertFromHtml, ContentState, CompositeDecorator, ContentBlock } from 'draft-js';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { Editor } from 'react-draft-wysiwyg';
@@ -16,7 +16,6 @@ class Page extends Component {
 
 		const key = this.props.match.params.key;
 		let pages = this.props.pages;
-		let content = '';
 		let savedContent = '';
 		let state;
 
