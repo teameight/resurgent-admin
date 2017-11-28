@@ -87,11 +87,13 @@ class Provider extends Component {
 			email: this.email.value,
 			cost: this.cost.value,
 			desc: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
+			type: this.type.value,
 			area: this.area.value,
 			image: this.state.uploadedFileCloudinaryUrl,
 			order: this.order.value,
 			archive: this.archive.checked
 		}
+
 
 		this.props.updateProvider(pkey, formValues);
 		this.props.history.goBack();
@@ -147,6 +149,15 @@ class Provider extends Component {
 								  onEditorStateChange={this.onChange}
 								  ref={(input) => this.desc = input}
 								/>
+							</div>
+							<div className="form-group">
+								<label htmlFor="formControlsType" className="control-label">Provider Type</label>
+								<select ref={(input) => this.type = input} id="formControlsType" defaultValue={ provider.type } className="form-control" name="type">
+									<option value="default">Default</option>
+									<option value="interviewstream">InterviewStream</option>
+									<option value="headhunter">Headhunter</option>
+									<option value="watchvideos">Watch Videos Now</option>
+								</select>
 							</div>
 							<div className="form-group">
 								<label htmlFor="formControlsArea" className="control-label">Parent Area</label>

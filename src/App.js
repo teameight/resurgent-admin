@@ -198,6 +198,11 @@ class App extends Component {
       providersRef.child(pId).child('desc').set(formValue.desc);
     }
 
+    if ( formValue.type ) {
+      providers[pkey].type = formValue.type;
+      providersRef.child(pId).child('type').set(formValue.type);
+    }
+
     if ( formValue.area ) {
       providers[pkey].area = formValue.area;
       providersRef.child(pId).child('area').set(formValue.area);
