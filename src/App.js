@@ -6,7 +6,7 @@ import Header from './Header';
 import Loading from './Loading';
 import './App.css';
 
-import { Grid, Row } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 
 import Categories from './Categories';
 import Category from './Category';
@@ -410,7 +410,7 @@ class App extends Component {
             }
             {
               isAuthed && !noData && (
-                <Grid>
+                <Container>
                   <Row className="show-grid">
                     <Route exact path="/" render={(props) => <Categories categories={this.state.categories} {...props} />} />
                     <Route path="/categories/:ckey" render={(props) => <Category categories={this.state.categories} updateCategory={this.updateCategory} {...props} />} />
@@ -427,7 +427,7 @@ class App extends Component {
                     <Route exact path="/pages" render={(props) => <Pages pages={this.state.pages} {...props} />} />
                     <Route path="/pages/:key" render={(props) => <Page pages={this.state.pages} updatePage={this.updatePage} {...props} />} />
                   </Row>
-                </Grid>
+                </Container>
               )
             }
         </div>
