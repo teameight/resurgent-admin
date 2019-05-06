@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, NavItem } from 'react-bootstrap';
+import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 class Header extends Component {
@@ -18,33 +18,23 @@ class Header extends Component {
 
 	render() {
 		return(
-			<Navbar>
-			    <Navbar.Header>
-			      <Navbar.Brand>
-			        <Link to="/" ><img src={require('./img/logo.png')} alt="Resurgent - Legal Outplacement" /></Link>
-			        <p>Resurgent Admin Panel</p>
-			      </Navbar.Brand>
-			      {
-            this.props.showMenu && (
-            	<Navbar.Toggle />
-            	)
-          }
-			    </Navbar.Header>
-			    {
-            this.props.showMenu && (
-				    <Navbar.Collapse>
-				      <Nav pullRight>
-				        <NavItem href="/">Categories</NavItem>
-				        <NavItem href="/areas">Areas</NavItem>
-				        <NavItem href="/providers">Providers</NavItem>
-				        <NavItem href="/users">Users</NavItem>
-				        <NavItem href="/pages">Pages</NavItem>
-				        <NavItem onClick={	(e) => this.logout(e)}>Sign Out</NavItem>
-				      </Nav>
-				    </Navbar.Collapse>
-			    )
-        }
-			</Navbar>
+		<Navbar bg="light" expand="lg">
+		  <Navbar.Brand href="/"><img src={require('./img/logo.png')} alt="Resurgent - Legal Outplacement" /></Navbar.Brand>
+		  <Navbar.Text>Resurgent Admin Panel</Navbar.Text>
+		  <Navbar.Toggle aria-controls="basic-navbar-nav" />
+		  <Navbar.Collapse id="basic-navbar-nav">
+		    <Nav className="ml-auto">
+		      <NavDropdown alignRight title="Menu" id="basic-nav-dropdown">
+		        <NavDropdown.Item href="/">Categories</NavDropdown.Item>
+		        <NavDropdown.Item href="/areas">Areas</NavDropdown.Item>
+		        <NavDropdown.Item href="/providers">Providers</NavDropdown.Item>
+		        <NavDropdown.Item href="/users">Users</NavDropdown.Item>
+		        <NavDropdown.Item href="/pages">Pages</NavDropdown.Item>
+		        <NavDropdown.Item onClick={	(e) => this.logout(e)}>Sign Out</NavDropdown.Item>
+		      </NavDropdown>
+		    </Nav>
+		  </Navbar.Collapse>
+		</Navbar>
   	)
 	}
 }
